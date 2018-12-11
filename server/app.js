@@ -12,6 +12,7 @@ var con = mysql.createConnection({
 });
 
 var app = express();
+var nombreArchivo = '';
 
 
 app.use(express.static(path.resolve('../public')));
@@ -23,107 +24,25 @@ app.use('/css', express.static(path.resolve('../css')));
 app.use('/fonts', express.static(path.resolve('../fonts')));
 app.use('/node_modules', express.static(path.resolve('../node_modules')));
 
+//Modulos propios
+var CatCocina = require('./CatCocina');
+
+
+app.use('/CatCocina', CatCocina);
+
 
 con.connect(function (err) {
-
     if (err) throw err;
     console.log("Connected!");
 });
 
-console.log(__dirname);
+app.set('con', con);
+app.set('bodyParser', bodyParser);
+app.set('path', path);
 
-app.get('/CatCocina', function (req, res) {
-    //if (req.session.usuario != null) {
-    res.sendFile(path.resolve('../public/CatCocina.html'));
-    // } else {
-    //     res.sendfile(__dirname + '/public/Login.html');
-    // }    
-});
 
-app.get('/cocina', function (req, res) {
-    var sql = "select * from CatCocinaPlato;";
-    con.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        console.log(JSON.stringify(result));
-        res.json(result);
-    });
-});
 
-var nombreArchivo = '';
-app.post('/cocina', function (req, res) {
-    console.log(req.body);
-    req.body.imagen = nombreArchivo;
 
-    var sql = "INSERT INTO CatCocinaPlato (nombre, descripcion, precio, imagen) VALUES ?";
-    var values = [
-        [req.body.nombre, req.body.descripcion, req.body.precio, req.body.imagen]
-    ];
-    con.query(sql, [values], function (err, result) {
-        if (err) throw err;
-        console.log(JSON.stringify(result));
-        res.json(result);
-    });
-});
-
-app.post('/cocinaNoImagen', function (req, res) {
-    var sql = "INSERT INTO CatCocinaPlato (nombre, descripcion, precio) VALUES ?";
-    var values = [
-        [req.body.nombre, req.body.descripcion, req.body.precio]
-    ];
-    con.query(sql, [values], function (err, result) {
-        if (err) throw err;
-        console.log(JSON.stringify(result));
-        res.json(result);
-    });
-});
-
-app.delete('/cocina/:id', function (req, res) {
-    var id = req.params.id;
-    //console.log('Eliminar: ' + id);
-    var sql = "DELETE FROM CatCocinaPlato WHERE id = " + id;
-    con.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("Number of records deleted: " + result.affectedRows);
-        res.json(result);
-    });
-});
-
-app.get('/cocina/:id', function (req, res) {
-    var id = req.params.id;
-    //console.log(id);
-    var sql = `select * from CatCocinaPlato where id = ${id}`;
-    con.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        console.log(JSON.stringify(result));
-        res.json(result[0]);
-    });
-});
-
-app.put('/cocina/:id', function (req, res) {
-
-    req.body.imagen = nombreArchivo;
-    var id = req.params.id;
-    //console.log(req.body.nombre);
-    var sql = `UPDATE CatCocinaPlato SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', 
-    precio = ${req.body.precio}, imagen = '${req.body.imagen}'   WHERE id = ${req.body.id}` ;
-
-    con.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("Number of records updated: " + result.affectedRows);
-        res.json(result);
-    });
-});
-
-app.put('/cocinaNoImagen/:id', function (req, res) {
-
-    var id = req.params.id;    
-    var sql = `UPDATE CatCocinaPlato SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', precio = ${req.body.precio}   WHERE id = ${req.body.id}` ;
-    con.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("Number of records updated: " + result.affectedRows);
-        res.json(result);
-    });
-});
 
 
 
@@ -152,6 +71,7 @@ var storage = multer.diskStorage({ //multers disk storage settings
         //console.log('multer------');
 
         nombreArchivo = 'img' + '-' + datetimestamp + '.jpeg';
+        app.set('nombreArchivo', nombreArchivo);
         // nombreArchivo = 'meme' + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1];
         cb(null, nombreArchivo)
     }
