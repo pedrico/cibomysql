@@ -1,0 +1,2 @@
+Se cambia de base de datos.
+Se quita imagen obligatoria al agregar en catálogo.

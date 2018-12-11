@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/css/bootstrap-Sandstone.css">
+    <!-- <link rel="stylesheet" href="/css/bootstrap3.3.6.css"> -->
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/angular.min.js"></script>
+
+    <!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /> -->
+
+    <!-- <script src="https://code.angularjs.org/1.4.8/angular.js"></script> -->
+    <script src="/js/ui-bootstrap-tpls-1.0.3.js"></script>
+    <title>
+        Cocina
+    </title>
+</head>
+
+<body ng-app="myApp">
+    <div style="background-image: url('/Imagenes/wood2.jpg') ">
+        <div ng-include="'header.html'"></div>
+
+        <form class="container" ng-controller="AppCtrl as up" name="up.upload_form">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <h1>Cocina</h1>
+                    <!-- <input ng-model="test"> {{test}} -->
+                </div>
+                <div class="col-md-5"></div>
+                <div class="col-md-1">
+                    <label style="color:white">Buscar:</label>
+                </div>
+                <div class="col-md-2">
+                    <input class="form-control" type="text" ng-model="searchBox">
+                </div>
+            </div>
+
+            <table class="table table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Imagen</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input required class="form-control" ng-model="cocina.nombre">
+                        </td>
+                        <td>
+                            <input required class="form-control" ng-model="cocina.descripcion">
+                        </td>
+                        <td>
+                            <input type="number" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" required class="form-control" ng-model="cocina.precio">
+                        </td>
+                        <td>
+                            <div>
+                                <input  type="file" ngf-select ng-model="up.file" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="20MB"
+                                />
+                                <img style="width:50px;" ng-show="!!up.file" ngf-thumbnail="up.file || 'Imagenes/subir.png'" />
+                                <!-- <i ng-show="up.upload_form.file.$error.required">*obligatorio</i> -->
+                                <br>
+                                <i ng-show="up.upload_form.file.$error.maxSize">File too large {{up.file.size / 1000000|number:1}}MB: max 20M</i>
+                                <!--  Multiple files
+                                <div class="button" ngf-select ng-model="up.files" ngf-multiple="true">Select</div>
+                                Drop files: <div ngf-drop ng-model="up.files" class="drop-box">Drop</div> -->
+                                <!-- <button type="submit" ng-click="up.submit()">submit</button> -->
+                                <p>{{up.progress}}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <button ng-show="ShowAgregar" class="btn btn-primary" ng-disabled="up.upload_form.$invalid" ng-click="addContact()">Agregar Plato</button>
+                            <button ng-show="ShowActualizar" class="btn btn-info" ng-click="update()">Actualizar</button>
+                        </td>
+                        <td>
+                            <button ng-show="ShowLimpiar" class="btn btn-info" ng-click="clear()">Limpiar</button>
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in filterData = (cocinaList | filter: searchBox) | limitTo:5:5*(page-1)">
+                        <td style="font-weight: bolder">{{cocina.nombre}}</td>
+                        <td>{{cocina.descripcion}}</td>
+                        <td>{{cocina.precio}}</td>
+                        <td>
+                            <img class="logo" src="http://localhost:4201/{{cocina.imagen}}" style="width:100px;" alt="Imagen">
+                        </td>
+                        <td>
+                            <a href="http://localhost:4201/IngreCocina?plato={{cocina._id}}" class="btn btn-success">Ingredientes</a>
+                            <!-- <a href="http://localhost:4201/IngreCocina" class="btn btn-success">Ingredientes</a> -->
+                            <!-- <button class="btn btn-danger" ng-click="redireccionar(cocina._id)">Ingredientes</button> -->
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" ng-click="remove(cocina.id)">Eliminar</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning" ng-click="edit(cocina.id)">Editar</button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <!-- <div>
+                <div style="color:white"> {{noOfPages}} &nbsp; {{currentPage}} &nbsp; {{maxSize}}
+                <pagination ng-model="currentPage" total-items="bodynews.length" items-per-page="5"></pagination>
+            </div> -->
+            <!-- <div class="alert alert-info" ng-repeat="tic in paged.bodynews">
+                    {{tic}}
+                </div> -->
+
+                <uib-pagination class="pagination-sm pagination" total-items="filterData.length" ng-model="page"
+                ng-change="pageChanged()" previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page=5></uib-pagination>
+
+        </form>
+        <div ng-include="'footer.html'"></div>
+    </div>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
+    <script src="controllers/CatCocinaController.js"></script>
+    <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
+    <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
+
+</body>
+
+</html>
