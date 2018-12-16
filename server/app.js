@@ -26,9 +26,13 @@ app.use('/node_modules', express.static(path.resolve('../node_modules')));
 
 //Modulos propios
 var CatCocina = require('./CatCocina');
+var CatCocinaIngre = require('./CatCocinaIngre');
+var CocinaPlatoIngre = require('./CocinaPlatoIngre');
 
 
 app.use('/CatCocina', CatCocina);
+app.use('/CatCocinaIngre', CatCocinaIngre);
+app.use('/CocinaPlatoIngre', CocinaPlatoIngre);
 
 
 con.connect(function (err) {
@@ -39,11 +43,6 @@ con.connect(function (err) {
 app.set('con', con);
 app.set('bodyParser', bodyParser);
 app.set('path', path);
-
-
-
-
-
 
 
 
