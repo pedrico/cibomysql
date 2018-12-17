@@ -16,14 +16,14 @@ router.use(function variablesGlobales(req,res,next){
 
 router.get('/', function (req, res) {
     //if (req.session.usuario != null) {
-    res.sendFile(path.resolve('../public/CatCocina.html'));
+    res.sendFile(path.resolve('../public/CatBar.html'));
     // } else {
     //     res.sendfile(__dirname + '/public/Login.html');
     // }    
 });
 
 router.get('/cocina', function (req, res) {
-    var sql = "select * from CatCocinaPlato;";
+    var sql = "select * from CatBarBebida;";
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
@@ -36,9 +36,9 @@ router.post('/cocina', function (req, res) {
     console.log(req.body);
     req.body.imagen = nombreArchivo;
 
-    var sql = "INSERT INTO CatCocinaPlato (nombre, descripcion, precio, imagen) VALUES ?";
+    var sql = "INSERT INTO CatBarBebida (nombre, descripcion, precio, imagen, categoria) VALUES ?";
     var values = [
-        [req.body.nombre, req.body.descripcion, req.body.precio, req.body.imagen]
+        [req.body.nombre, req.body.descripcion, req.body.precio, req.body.imagen, 2]
     ];
     con.query(sql, [values], function (err, result) {
         if (err) throw err;
@@ -48,9 +48,9 @@ router.post('/cocina', function (req, res) {
 });
 
 router.post('/cocinaNoImagen', function (req, res) {
-    var sql = "INSERT INTO CatCocinaPlato (nombre, descripcion, precio) VALUES ?";
+    var sql = "INSERT INTO CatBarBebida (nombre, descripcion, precio, categoria) VALUES ?";
     var values = [
-        [req.body.nombre, req.body.descripcion, req.body.precio]
+        [req.body.nombre, req.body.descripcion, req.body.precio, 2]
     ];
     con.query(sql, [values], function (err, result) {
         if (err) throw err;
@@ -62,7 +62,7 @@ router.post('/cocinaNoImagen', function (req, res) {
 router.delete('/cocina/:id', function (req, res) {
     var id = req.params.id;
     //console.log('Eliminar: ' + id);
-    var sql = "DELETE FROM CatCocinaPlato WHERE id = " + id;
+    var sql = "DELETE FROM CatBarBebida WHERE id = " + id;
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Number of records deleted: " + result.affectedRows);
@@ -73,7 +73,7 @@ router.delete('/cocina/:id', function (req, res) {
 router.get('/cocina/:id', function (req, res) {
     var id = req.params.id;
     //console.log(id);
-    var sql = `select * from CatCocinaPlato where id = ${id}`;
+    var sql = `select * from CatBarBebida where id = ${id}`;
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
@@ -86,7 +86,7 @@ router.put('/cocina/:id', function (req, res) {
     req.body.imagen = nombreArchivo;
     var id = req.params.id;
     //console.log(req.body.nombre);
-    var sql = `UPDATE CatCocinaPlato SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', 
+    var sql = `UPDATE CatBarBebida SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', 
     precio = ${req.body.precio}, imagen = '${req.body.imagen}'   WHERE id = ${req.body.id}` ;
 
     con.query(sql, function (err, result) {
@@ -99,7 +99,7 @@ router.put('/cocina/:id', function (req, res) {
 router.put('/cocinaNoImagen/:id', function (req, res) {
 
     var id = req.params.id;    
-    var sql = `UPDATE CatCocinaPlato SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', precio = ${req.body.precio}   WHERE id = ${req.body.id}` ;
+    var sql = `UPDATE CatBarBebida SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', precio = ${req.body.precio}   WHERE id = ${req.body.id}` ;
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Number of records updated: " + result.affectedRows);

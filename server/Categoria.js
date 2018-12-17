@@ -16,11 +16,21 @@ router.use(function variablesGlobales(req,res,next){
 
 router.get('/', function (req, res) {
     //if (req.session.usuario != null) {
-    res.sendFile(path.resolve('../public/CatCocina.html'));
+    res.sendFile(path.resolve('../public/Categoria.html'));
     // } else {
     //     res.sendfile(__dirname + '/public/Login.html');
     // }    
 });
+
+router.get('/CategoriaSesionMesa', function (req, res) {
+    var SesionMesa = { NumeroMesa: req.session.NumeroMesa };
+    res.send(SesionMesa);    
+});
+
+
+
+
+
 
 router.get('/cocina', function (req, res) {
     var sql = "select * from CatCocinaPlato;";
@@ -36,9 +46,9 @@ router.post('/cocina', function (req, res) {
     console.log(req.body);
     req.body.imagen = nombreArchivo;
 
-    var sql = "INSERT INTO CatCocinaPlato (nombre, descripcion, precio, imagen, categoria) VALUES ?";
+    var sql = "INSERT INTO CatCocinaPlato (nombre, descripcion, precio, imagen) VALUES ?";
     var values = [
-        [req.body.nombre, req.body.descripcion, req.body.precio, req.body.imagen, 1]
+        [req.body.nombre, req.body.descripcion, req.body.precio, req.body.imagen]
     ];
     con.query(sql, [values], function (err, result) {
         if (err) throw err;
@@ -48,9 +58,9 @@ router.post('/cocina', function (req, res) {
 });
 
 router.post('/cocinaNoImagen', function (req, res) {
-    var sql = "INSERT INTO CatCocinaPlato (nombre, descripcion, precio, categoria) VALUES ?";
+    var sql = "INSERT INTO CatCocinaPlato (nombre, descripcion, precio) VALUES ?";
     var values = [
-        [req.body.nombre, req.body.descripcion, req.body.precio, 1]
+        [req.body.nombre, req.body.descripcion, req.body.precio]
     ];
     con.query(sql, [values], function (err, result) {
         if (err) throw err;

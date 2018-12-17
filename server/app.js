@@ -2,6 +2,7 @@ const mysql = require('mysql');
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 
 var con = mysql.createConnection({
@@ -18,6 +19,7 @@ var nombreArchivo = '';
 app.use(express.static(path.resolve('../public')));
 app.use(express.static(path.resolve('../uploads')));
 app.use(bodyParser.json());
+app.use(session({ secret: 'abcd1234', cookie: { secure: false, resave: true } }));
 //Configuro localmente los estilos Bootstrap, JQyery https://stackoverflow.com/questions/22792254/how-do-i-load-bootstrap-using-npm
 app.use('/js', express.static(path.resolve('../js')));
 app.use('/css', express.static(path.resolve('../css')));
@@ -28,11 +30,20 @@ app.use('/node_modules', express.static(path.resolve('../node_modules')));
 var CatCocina = require('./CatCocina');
 var CatCocinaIngre = require('./CatCocinaIngre');
 var CocinaPlatoIngre = require('./CocinaPlatoIngre');
-
+var CatBar = require('./CatBar');
+var CatBarIngre = require('./CatBarIngre');
+var BarBebidaIngre = require('./BarBebidaIngre');
+var SeleccionMesa = require('./SeleccionMesa');
+var Categoria = require('./Categoria');
 
 app.use('/CatCocina', CatCocina);
 app.use('/CatCocinaIngre', CatCocinaIngre);
 app.use('/CocinaPlatoIngre', CocinaPlatoIngre);
+app.use('/CatBar', CatBar);
+app.use('/CatBarIngre', CatBarIngre);
+app.use('/BarBebidaIngre', BarBebidaIngre);
+app.use('/SeleccionMesa', SeleccionMesa);
+app.use('/Categoria', Categoria);
 
 
 con.connect(function (err) {
@@ -43,6 +54,7 @@ con.connect(function (err) {
 app.set('con', con);
 app.set('bodyParser', bodyParser);
 app.set('path', path);
+app.set('session', session);
 
 
 

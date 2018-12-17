@@ -12,3 +12,4 @@
 # sudo npm install multer --save
 # sudo npm install ng-file-upload --save
 # sudo npm install body-parser --save
+# sudo npm install express-session --save

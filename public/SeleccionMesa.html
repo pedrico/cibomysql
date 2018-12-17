@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/css/bootstrap-Sandstone.css">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body ng-app="SeleccionMesaModule">
+    <div style="background-image: url('/Imagenes/wood3.jpg') ">
+        <div ng-include="'header.html'"></div>
+        <form class="container">
+            <div class="container" ng-controller="CtrlSeleccionMesa">
+                <div class="row">
+                    <div class="col-sm-9">
+                    </div>
+                    <div class="col-sm-3">
+                        <span class="badge badge-pill badge-warning" style="font-size: 15px">Usuario: {{usuario}}</span>                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="white-space: nowrap;">
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="push1()">
+                            1</button>
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="push2()">
+                            2</button>
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="push3()">
+                            3</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="white-space: nowrap;">
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="push4()">
+                            4</button>
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="push5()">
+                            5</button>
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="push6()">
+                            6</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="white-space: nowrap;">
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="push7()">
+                            7</button>
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="push8()">
+                            8</button>
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="push9()">
+                            9</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="white-space: nowrap;">
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 15px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="Limpiar()">
+                            Limpiar</button>
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="push0()">
+                            0</button>
+                        <button class="btn btn-info" style="width: 32%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="Eliminar()">
+                            <</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="white-space: nowrap;">
+                        <label style="font-size: 50px; width: 96%; border: solid; border-color: gray; background-color: rgb(255, 255, 255)">{{Mesa.NumeroMesa}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6" style="white-space: nowrap;">
+                        <button class="btn btn-success" style="font-weight: bolder; width: 100%; height:50px; font-size: 15px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="Continuar()">
+                            Continuar</button>
+                    </div>
+                    <div class="col-sm-6" style="white-space: nowrap;">
+                        <button class="btn btn-danger" style="font-weight: bold; width: 100%; height:50px; font-size: 15px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+                            ng-click="Limpiar()">
+                            Cancelar</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+    </form>
+    <div ng-include="'footer.html'"></div>
+    </div>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
+    <script src="controllers/SeleccionMesaController.js"></script>
+</body>
+
+</html>
