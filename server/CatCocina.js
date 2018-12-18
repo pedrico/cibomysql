@@ -5,10 +5,10 @@ var con;
 var path;
 var nombreArchivo;
 
-router.use(function variablesGlobales(req,res,next){
+router.use(function variablesGlobales(req, res, next) {
     console.log("obteniendo conexion");
-    con  = req.app.get('con');
-    path  = req.app.get('path');
+    con = req.app.get('con');
+    path = req.app.get('path');
     nombreArchivo = req.app.get('nombreArchivo');;
     console.log("conexion obtenida");
     next();
@@ -55,6 +55,7 @@ router.post('/cocinaNoImagen', function (req, res) {
     con.query(sql, [values], function (err, result) {
         if (err) throw err;
         console.log(JSON.stringify(result));
+        console.log(result.insertId);
         res.json(result);
     });
 });
@@ -87,7 +88,7 @@ router.put('/cocina/:id', function (req, res) {
     var id = req.params.id;
     //console.log(req.body.nombre);
     var sql = `UPDATE CatCocinaPlato SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', 
-    precio = ${req.body.precio}, imagen = '${req.body.imagen}'   WHERE id = ${req.body.id}` ;
+    precio = ${req.body.precio}, imagen = '${req.body.imagen}'   WHERE id = ${req.body.id}`;
 
     con.query(sql, function (err, result) {
         if (err) throw err;
@@ -98,8 +99,8 @@ router.put('/cocina/:id', function (req, res) {
 
 router.put('/cocinaNoImagen/:id', function (req, res) {
 
-    var id = req.params.id;    
-    var sql = `UPDATE CatCocinaPlato SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', precio = ${req.body.precio}   WHERE id = ${req.body.id}` ;
+    var id = req.params.id;
+    var sql = `UPDATE CatCocinaPlato SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', precio = ${req.body.precio}   WHERE id = ${req.body.id}`;
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Number of records updated: " + result.affectedRows);

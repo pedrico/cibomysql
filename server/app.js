@@ -35,6 +35,7 @@ var CatBarIngre = require('./CatBarIngre');
 var BarBebidaIngre = require('./BarBebidaIngre');
 var SeleccionMesa = require('./SeleccionMesa');
 var Categoria = require('./Categoria');
+var SeleccionCocina = require('./SeleccionCocina');
 
 app.use('/CatCocina', CatCocina);
 app.use('/CatCocinaIngre', CatCocinaIngre);
@@ -44,6 +45,7 @@ app.use('/CatBarIngre', CatBarIngre);
 app.use('/BarBebidaIngre', BarBebidaIngre);
 app.use('/SeleccionMesa', SeleccionMesa);
 app.use('/Categoria', Categoria);
+app.use('/SeleccionCocina', SeleccionCocina);
 
 
 con.connect(function (err) {

@@ -3,14 +3,14 @@ var myApp = angular.module('myApp', ['ngFileUpload']);
 myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($scope, $http, Upload, $window) {
 
     var refresh = function () {
-        $http.get('/cocina').then(function (response) {
+        $http.get('/CatCocina/cocina').then(function (response) {
             //console.log("Recibí la info que requerí.");
             $scope.cocinaList = response.data;
             $scope.alert = { message: 'hola', closable: true };
             console.log($scope.alert);
         });
 
-        $http.get('/CategoriaSesionMesa').then(function (response) {
+        $http.get('/Categoria/CategoriaSesionMesa').then(function (response) {
             console.log(response.data.NumeroMesa);
             $scope.NumeroMesa = response.data.NumeroMesa;
         });
