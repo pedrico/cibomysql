@@ -4,8 +4,8 @@ IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$
 
     var refresh = function () {
         var idplato = getUrlParameter('plato');
-        
-        $http.get('/BarBebidaIngre/ListaGrid/' + idplato).then(function (response) {
+
+        $http.get('/SeleccionIngreCocina/' + idplato).then(function (response) {
             console.log("-------------Refresh" + idplato);
             console.log(response.data);
             $scope.IngreCocinaList = response.data;
@@ -14,38 +14,52 @@ IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$
             $scope.ShowActualizar = false;
             $scope.ShowLimpiar = true;
             //Limpia el contacto recien agregado
-            $scope.cocina = null;
+            //$scope.cocina = null;
             vm.file = null;
             vm.progress = null;
+            $http.get('/CatCocina/cocina/' + idplato).then(function (response) {
+                console.log("Titulo plato");
+                console.log(response);
+                $scope.cocina = response.data;
+            });
         });
-
+        
         //ComboBox
-        $http.get('/BarBebidaIngre/Listaddl').then(function (response) {
-            $scope.names = response.data;
-        });
+        // $http.get('/ListIngredientes').then(function (response) {
+        //     $scope.names = response.data;
+        // });
     };
     refresh();
 
-    $scope.addContact = function () {
-        if (angular.isUndefined($scope.ingreSeleccionado)) {
-            $window.alert('Seleccione un ingrediente');
-        }
-        else {
-            var idplato = getUrlParameter('plato');
-            console.log($scope.ingreSeleccionado);
-            $http.post('/BarBebidaIngre/' + idplato, $scope.ingreSeleccionado).then(function (response) {
-                console.log(response);
-                refresh();
-            });
-        }
+    $scope.addItem = function () {
+        var idplato = getUrlParameter('plato');
+        var DetalleOrdenMesa = { iditemcocina: idplato }
+        console.log("Agregar Item");
+        $http.post('/SeleccionIngreCocina', DetalleOrdenMesa).then(function (response) {
+            $window.location.href = response.data.redireccionar;
+        });
     };
 
-    $scope.remove = function (id) {
+    $scope.remove = function (id, nombre) {
         var idplato = getUrlParameter('plato');
         console.log(id);
-        $http.delete('/BarBebidaIngre/' + idplato+"/Ingrediente/"+id).then(function (response) {
+        $http.put('/SeleccionIngreCocina/' + idplato + "/Ingrediente/" + id).then(function (response) {
+            console.log(response.data);
+            // $scope.alerta = { mensaje: response.data.nombre, visible: true };            
             console.log("Actualiza despues de eliminar")
+            $scope.alerta = { mensaje: nombre, visible: true };
             refresh();
+        });
+
+        // $http.get('/PruebaSesionNuevoPlato').then(function (response) {            
+        // });
+    };
+
+
+
+    $scope.cancelar = function (id) {
+        $http.post('/Categoria/CategoriaCocina').then(function (res) {
+            $window.location.href = res.data.redireccionar;
         });
     };
 
@@ -57,7 +71,7 @@ IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$
             $scope.ShowAgregar = false;
             $scope.ShowActualizar = true;
             $scope.ShowLimpiar = true;
-            vm.file = "http://localhost:4201/" + response.data.imagen;
+            vm.file = "http://localhost:4200/" + response.data.imagen;
         });
     };
 
@@ -99,7 +113,7 @@ IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$
     }
     vm.upload = function (file) {
         Upload.upload({
-            url: 'http://localhost:4201/upload', //webAPI exposed to upload the file
+            url: 'http://localhost:4200/upload', //webAPI exposed to upload the file
             data: { file: file } //pass file as data, should be user ng-model
         }).then(function (resp) { //upload function returns a promise
             if (resp.data.error_code === 0) { //validate success

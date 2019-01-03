@@ -19,7 +19,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
     });
 
     var refresh = function () {
-        $http.get('CatBar/cocina').then(function (response) {
+        $http.get('CatBar/bar').then(function (response) {
             $scope.cocinaList = response.data;
             $scope.ShowAgregar = true;
             $scope.ShowActualizar = false;
@@ -60,7 +60,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
             subir(vm.file, function () {
                 console.log("despues de subir imagen")
                 console.log($scope.cocina);
-                $http.post('CatBar/cocina', $scope.cocina).then(function (response) {
+                $http.post('CatBar/bar', $scope.cocina).then(function (response) {
                     console.log(response);
                     refresh();
                 });
@@ -69,7 +69,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
         }
         else {
             //Si el usuario no selecciona imagen
-            $http.post('CatBar/cocinaNoImagen', $scope.cocina).then(function (response) {
+            $http.post('CatBar/barNoImagen', $scope.cocina).then(function (response) {
                 console.log(response);
                 refresh();
             });
@@ -78,7 +78,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
 
     $scope.remove = function (id) {
         console.log(id);
-        $http.delete('CatBar/cocina/' + id).then(function (response) {
+        $http.delete('CatBar/bar/' + id).then(function (response) {
             refresh();
         });
 
@@ -86,7 +86,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
 
     $scope.edit = function (id) {
         console.log(id);
-        $http.get('CatBar/cocina/' + id).then(function (response) {
+        $http.get('CatBar/bar/' + id).then(function (response) {
             console.log(response);
             $scope.cocina = response.data;
             $scope.ShowAgregar = false;
@@ -98,7 +98,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
 
     $scope.redireccionar = function (id) {
         console.log(id + "--hola");
-        $http.get('CatBar/RedirectIngreCocina').then(function (data, status) {
+        $http.get('CatBar/RedirectIngreBar').then(function (data, status) {
 
         });
     };
@@ -108,7 +108,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
             console.log("entro if");
             subir(vm.file, function () {
                 console.log($scope.cocina._id);
-                $http.put('CatBar/cocina/' + $scope.cocina._id, $scope.cocina).then(function (response) {
+                $http.put('CatBar/bar/' + $scope.cocina._id, $scope.cocina).then(function (response) {
                     $scope.ShowAgregar = true;
                     refresh();
                 });
@@ -116,7 +116,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
         } else {
             console.log("entro a else");
             console.log(vm.file);
-            $http.put('CatBar/cocinaNoImagen/' + $scope.cocina._id, $scope.cocina).then(function (response) {
+            $http.put('CatBar/barNoImagen/' + $scope.cocina._id, $scope.cocina).then(function (response) {
                 $scope.ShowAgregar = true;
                 refresh();
             });

@@ -3,14 +3,13 @@
 
 <head>
     <meta charset="utf-8">
-    <!-- <meta name="mobile-web-app-capable" content="yes"> Intento quitar barra de navegacion -->
+    <!-- <meta name="mobile-web-app-capable" content="yes"> -->
     <link rel="stylesheet" href="/css/bootstrap-Sandstone.css">
-    <!-- <link rel="stylesheet" href="/css/bootstrap3.3.6.css"> -->
+    <link rel="stylesheet" href="/css/bootstrap3.3.6.css">
     <script src="/js/jquery-3.3.1.min.js"></script>
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.js"></script>
     <script src="/js/angular.min.js"></script>
-    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.0.3.js"></script>
 
     <title>
         Agregar a la Orden
@@ -18,11 +17,23 @@
 </head>
 
 <body ng-app="myApp">
-    <div style="background-image: url('/Imagenes/wood2.jpg') ">
+    <div style="background-image: url('/Imagenes/wood5.jpeg') ">
         <div ng-include="'header.html'"></div>
-
         <form class="container" ng-controller="AppCtrl as up" name="up.upload_form">
-            <div ng-include="'AccesosDirectos.html'"></div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <button class="btn btn-primary" ng-click="cambiarMesa()" style="width: 100%">Cambiar Mesa</button>
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-success" ng-click="orden()" style="width: 100%">Orden</button>
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn" ng-click="cuentaOrden()" style="width: 100%; background-color: rgb(246, 255, 75); color: black">$ Cuenta</button>
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-warning" ng-click="platos()" style="width: 100%">Platos</button>
+                </div>
+            </div>
             <br>
             <div class="row">
                 <div class="col-md-4">
@@ -60,24 +71,24 @@
                         <th scope="col">Nombre</th>
                         <th scope="col">Descripción</th>
                         <th scope="col">Precio</th>
-                        <!-- <th scope="col">Imagen</th> -->
+                        <th scope="col">Imagen</th>
                         <th>&nbsp;</th>
                         <th>&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
-                        <tr class="table-primary" style="color: rgb(67, 67, 77);" ng-repeat="cocina in cocinaList | filter: searchBox" >
-                        <td style="font-weight: bolder">{{cocina.nombre}}</td>
-                        <td>{{cocina.descripcion}}</td>
-                        <td>{{cocina.precio}}</td>
-                        <!-- <td>
-                            <img class="logo" src="http://localhost:4201/{{cocina.imagen}}" style="width:100px;" alt="Imagen">
-                        </td> -->
+                    <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="bar in barList | filter: searchBox">
+                        <td style="font-weight: bolder">{{bar.nombre}}</td>
+                        <td>{{bar.descripcion}}</td>
+                        <td>{{bar.precio}}</td>
                         <td>
-                            <button class="btn btn-success" ng-click="addItem(cocina.id)"> + </button>
+                            <img class="logo" src="http://localhost:4201/{{bar.imagen}}" style="width:100px;" alt="Imagen">
                         </td>
                         <td>
-                            <a href="http://localhost:4201/SeleccionIngreCocina?plato={{cocina.id}}" class="btn btn-warning">Ingre</a>
+                            <button class="btn btn-success" ng-click="addItem(bar.id)"> + </button>
+                        </td>
+                        <td>
+                            <a href="http://localhost:4201/SeleccionIngreBar?plato={{bar.id}}" class="btn btn-warning">Ingre</a>
                         </td>
                     </tr>
 
@@ -88,7 +99,7 @@
         <div ng-include="'footer.html'"></div>
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
-    <script src="controllers/SeleccionCocinaController.js"></script>
+    <script src="controllers/SeleccionBarController.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
 

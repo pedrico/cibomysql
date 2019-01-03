@@ -22,7 +22,7 @@ router.get('/', function (req, res) {
     // }    
 });
 
-router.get('/cocina', function (req, res) {
+router.get('/bar', function (req, res) {
     var sql = "select * from CatBarBebida;";
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
@@ -32,7 +32,7 @@ router.get('/cocina', function (req, res) {
 });
 
 
-router.post('/cocina', function (req, res) {
+router.post('/bar', function (req, res) {
     console.log(req.body);
     req.body.imagen = nombreArchivo;
 
@@ -47,7 +47,7 @@ router.post('/cocina', function (req, res) {
     });
 });
 
-router.post('/cocinaNoImagen', function (req, res) {
+router.post('/barNoImagen', function (req, res) {
     var sql = "INSERT INTO CatBarBebida (nombre, descripcion, precio, categoria) VALUES ?";
     var values = [
         [req.body.nombre, req.body.descripcion, req.body.precio, 2]
@@ -59,7 +59,7 @@ router.post('/cocinaNoImagen', function (req, res) {
     });
 });
 
-router.delete('/cocina/:id', function (req, res) {
+router.delete('/bar/:id', function (req, res) {
     var id = req.params.id;
     //console.log('Eliminar: ' + id);
     var sql = "DELETE FROM CatBarBebida WHERE id = " + id;
@@ -70,7 +70,7 @@ router.delete('/cocina/:id', function (req, res) {
     });
 });
 
-router.get('/cocina/:id', function (req, res) {
+router.get('/bar/:id', function (req, res) {
     var id = req.params.id;
     //console.log(id);
     var sql = `select * from CatBarBebida where id = ${id}`;
@@ -81,7 +81,7 @@ router.get('/cocina/:id', function (req, res) {
     });
 });
 
-router.put('/cocina/:id', function (req, res) {
+router.put('/bar/:id', function (req, res) {
 
     req.body.imagen = nombreArchivo;
     var id = req.params.id;
@@ -96,7 +96,7 @@ router.put('/cocina/:id', function (req, res) {
     });
 });
 
-router.put('/cocinaNoImagen/:id', function (req, res) {
+router.put('/barNoImagen/:id', function (req, res) {
 
     var id = req.params.id;    
     var sql = `UPDATE CatBarBebida SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', precio = ${req.body.precio}   WHERE id = ${req.body.id}` ;

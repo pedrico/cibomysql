@@ -25,7 +25,7 @@ router.get('/', function (req, res) {
     //if (req.session.usuario != null) {
     var IngredientesExcluidos = [];
     req.session.IngredientesExcluidos = IngredientesExcluidos;
-    res.sendFile(path.resolve('../public/SeleccionCocina.html'));
+    res.sendFile(path.resolve('../public/SeleccionBar.html'));
     // } else {
     //     res.sendfile(__dirname + '/public/Login.html');
     // }    
@@ -36,7 +36,7 @@ router.post('/', function (req, res) {
     var NumeroMesa = req.session.NumeroMesa
     var NumeroSesion = -1;
     var OrdenMesaResult = null;
-    var idPlato = req.body.iditemcocina;
+    var idPlato = req.body.iditembar;
     req.session.OrdenMesa = "123";
     req.session.otro = "123";
     console.log("Numero mesa: " + NumeroMesa);
@@ -70,14 +70,14 @@ router.post('/', function (req, res) {
                     console.log(JSON.stringify(result));
                     console.log("Id del plato: " + idPlato);
                     sql = `select id, nombre, descripcion, imagen 
-                    from CatCocinaPlato c
+                    from CatBarBebida c
                     where id = ${idPlato}`;
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
                         sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                         values = [
-                            [NumeroMesa, 1, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                            [NumeroMesa, 1, idPlato, 2, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                         ];
                         con.query(sql, [values], function (err, result) {
                             if (err) throw err;
@@ -92,7 +92,7 @@ router.post('/', function (req, res) {
             //Mesa ya ha sido seleccionada mas de 1 vez
             console.log(result.length);
             console.log("Id del plato: " + idPlato);
-            sql = ` select * from Sesion
+            var sql = ` select * from Sesion
             where idMesa = ${NumeroMesa}
             and num = (select max(num)  as num
                 from Sesion 
@@ -105,14 +105,14 @@ router.post('/', function (req, res) {
                 if (sesionCerrada == 0) {
                     //La cuenta de la mesa sigue abierta, se asigna el plato a la cuenta actual.
                     sql = `select id, nombre, descripcion, imagen 
-                    from CatCocinaPlato c
+                    from CatBarBebida c
                     where id = ${idPlato}`;
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
                         sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                         values = [
-                            [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                            [NumeroMesa, NumeroSesion, idPlato, 2, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                         ];
                         con.query(sql, [values], function (err, result) {
                             if (err) throw err;
@@ -129,14 +129,14 @@ router.post('/', function (req, res) {
                     ];
                     con.query(sql, [values], function (err, result) {
                         sql = `select id, nombre, descripcion, imagen 
-                        from CatCocinaPlato c
+                        from CatBarBebida c
                         where id = ${idPlato}`;
                         con.query(sql, function (err, result, fields) {
                             if (err) throw err;
                             console.log(JSON.stringify(result));
                             sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                             values = [
-                                [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                                [NumeroMesa, NumeroSesion, idPlato, 2, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                             ];
                             con.query(sql, [values], function (err, result) {
                                 if (err) throw err;
@@ -150,7 +150,7 @@ router.post('/', function (req, res) {
         }
     });
 
-    
+
 });
 
 router.post('/RedireccionarMesa', function (req, res) {
@@ -161,8 +161,8 @@ router.post('/RedireccionarOrden', function (req, res) {
     res.send({ redireccionar: '/ResumenOrden' });
 });
 
-router.post('/RedireccionarBebidas', function (req, res) {
-    res.send({ redireccionar: '/SeleccionBar' });
+router.post('/RedireccionarPlatos', function (req, res) {
+    res.send({ redireccionar: '/SeleccionCocina' });
 });
 
 router.post('/RedireccionarCuentaOrden', function (req, res) {

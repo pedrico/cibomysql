@@ -57,7 +57,7 @@ IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$
             $scope.ShowAgregar = false;
             $scope.ShowActualizar = true;
             $scope.ShowLimpiar = true;
-            vm.file = "http://localhost:4200/" + response.data.imagen;
+            vm.file = "http://localhost:4201/" + response.data.imagen;
         });
     };
 
@@ -99,7 +99,7 @@ IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$
     }
     vm.upload = function (file) {
         Upload.upload({
-            url: 'http://localhost:4200/upload', //webAPI exposed to upload the file
+            url: 'http://localhost:4201/upload', //webAPI exposed to upload the file
             data: { file: file } //pass file as data, should be user ng-model
         }).then(function (resp) { //upload function returns a promise
             if (resp.data.error_code === 0) { //validate success

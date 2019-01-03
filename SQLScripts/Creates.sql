@@ -14,7 +14,7 @@ PRIMARY KEY (id)
 create table CatCocinaIngre(
 id int NOT NULL AUTO_INCREMENT,
 nombre CHAR(30) NOT NULL,
-descripcion CHAR(30) NOT NULL,
+descripcion CHAR(30) NULL,
 imagen VARCHAR(100),
 PRIMARY KEY (id)
 );
@@ -39,7 +39,7 @@ PRIMARY KEY (id)
 create table CatBarIngre(
 id int NOT NULL AUTO_INCREMENT,
 nombre CHAR(30) NOT NULL,
-descripcion CHAR(30) NOT NULL,
+descripcion CHAR(30) NULL,
 imagen VARCHAR(100),
 PRIMARY KEY (id)
 );
@@ -55,19 +55,28 @@ id int NOT NULL
 );
 
 create table Sesion(
-id int NOT NULL AUTO_INCREMENT,
+-- id int NOT NULL AUTO_INCREMENT,
 num int NOT NULL,
 idMesa int NOT NULL,
-cerrada tinyint,
-PRIMARY KEY (id)
+cerrada tinyint
+-- PRIMARY KEY (id)
 );
 
 create table DetalleOrdenMesa(
-idSesion int NOT NULL,
+id int NOT NULL AUTO_INCREMENT,
+idMesa int not null,
+numSesion int NOT NULL,
 idItem int not null,
 categoria smallint,
 precio DECIMAL(13,2),
 enviada smallint,
 fechaInsert datetime,
-fechaUpdate datetime
+fechaUpdate datetime,
+PRIMARY KEY (id)
 );
+
+create table IngreRemovido(
+idDetalleOrdenMesa int not null,
+idIngre int not null
+);
+

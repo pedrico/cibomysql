@@ -36,6 +36,10 @@ var BarBebidaIngre = require('./BarBebidaIngre');
 var SeleccionMesa = require('./SeleccionMesa');
 var Categoria = require('./Categoria');
 var SeleccionCocina = require('./SeleccionCocina');
+var SeleccionBar = require('./SeleccionBar');
+var ResumenOrden = require('./ResumenOrden');
+var SeleccionIngreCocina = require('./SeleccionIngreCocina');
+var SeleccionIngreBar = require('./SeleccionIngreBar');
 
 app.use('/CatCocina', CatCocina);
 app.use('/CatCocinaIngre', CatCocinaIngre);
@@ -46,6 +50,10 @@ app.use('/BarBebidaIngre', BarBebidaIngre);
 app.use('/SeleccionMesa', SeleccionMesa);
 app.use('/Categoria', Categoria);
 app.use('/SeleccionCocina', SeleccionCocina);
+app.use('/SeleccionBar', SeleccionBar);
+app.use('/ResumenOrden', ResumenOrden);
+app.use('/SeleccionIngreCocina', SeleccionIngreCocina);
+app.use('/SeleccionIngreBar', SeleccionIngreBar);
 
 
 con.connect(function (err) {

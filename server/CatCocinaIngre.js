@@ -35,6 +35,11 @@ router.post('/ingrediente', function (req, res) {
     
     req.body.imagen = nombreArchivo;
     console.log(req.body);
+
+    if  (req.body.descripcion == null){
+        req.body.descripcion = "";
+    }
+
     var sql = "INSERT INTO CatCocinaIngre (nombre, descripcion, imagen) VALUES ?";
     var values = [
         [req.body.nombre, req.body.descripcion, req.body.imagen]

@@ -3,9 +3,9 @@ var myApp = angular.module('myApp', ['ngFileUpload']);
 myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($scope, $http, Upload, $window) {
 
     var refresh = function () {
-        $http.get('/CatCocina/cocina').then(function (response) {
+        $http.get('/CatBar/bar').then(function (response) {
             //console.log("Recibí la info que requerí.");
-            $scope.cocinaList = response.data;
+            $scope.barList = response.data;
             $scope.alert = { message: 'hola', closable: true };
             console.log($scope.alert);
         });
@@ -24,9 +24,9 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
     OcultarAlerta();
 
     $scope.addItem = function (id) {
-        var DetalleOrdenMesa = { iditemcocina: id }
+        var DetalleOrdenMesa = { iditembar: id }
         console.log("Agregar Item");
-        $http.post('/SeleccionCocina', DetalleOrdenMesa).then(function (response) {            
+        $http.post('/SeleccionBar', DetalleOrdenMesa).then(function (response) {            
             $scope.alerta = { mensaje: response.data.nombre, visible: true };            
             refresh();
         });
@@ -34,7 +34,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
 
     $scope.remove = function (id) {
         console.log(id);
-        $http.delete('/cocina/' + id).then(function (response) {
+        $http.delete('/bar/' + id).then(function (response) {
             refresh();
         });
 
@@ -42,9 +42,9 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
 
     $scope.edit = function (id) {
         console.log(id);
-        $http.get('/cocina/' + id).then(function (response) {
+        $http.get('/bar/' + id).then(function (response) {
             console.log(response);
-            $scope.cocina = response.data;
+            $scope.bar = response.data;
             $scope.ShowAgregar = false;
             $scope.ShowActualizar = true;
             $scope.ShowLimpiar = true;
@@ -54,41 +54,41 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
 
     $scope.redireccionar = function (id) {
         console.log(id + "--hola");
-        $http.get('/SeleccionCocina/RedirectIngreCocina').then(function (data, status) {
+        $http.get('/RedirectIngreBar').then(function (data, status) {
 
         });
     };
 
     $scope.cambiarMesa = function () {        
-        $http.post('/SeleccionCocina/RedireccionarMesa').then(function (response) {
+        $http.post('/SeleccionBar/RedireccionarMesa').then(function (response) {
             $window.location.href= response.data.redireccionar;
         });
     };
 
     $scope.orden = function () {        
-        $http.post('/SeleccionCocina/RedireccionarOrden').then(function (response) {
+        $http.post('/SeleccionBar/RedireccionarOrden').then(function (response) {
             $window.location.href= response.data.redireccionar;
         });
     };
 
     $scope.cuentaOrden = function () {        
-        $http.post('/SeleccionCocina/RedireccionarCuentaOrden').then(function (response) {
+        $http.post('/SeleccionBar/RedireccionarCuentaOrden').then(function (response) {
             $window.location.href= response.data.redireccionar;
         });
     };
 
-    $scope.bebidas = function () {        
-        $http.post('/SeleccionCocina/RedireccionarBebidas').then(function (response) {
+    $scope.platos = function () {        
+        $http.post('/SeleccionBar/RedireccionarPlatos').then(function (response) {
             $window.location.href= response.data.redireccionar;
         });
     };
-    
+
     $scope.update = function () {
         if (vm.upload_form.file.$valid && vm.file) { //check if from is valid  
             console.log("entro if");
             subir(vm.file, function () {
-                console.log($scope.cocina._id);
-                $http.put('/cocina/' + $scope.cocina._id, $scope.cocina).then(function (response) {
+                console.log($scope.bar._id);
+                $http.put('/bar/' + $scope.bar._id, $scope.bar).then(function (response) {
                     $scope.ShowAgregar = true;
                     refresh();
                 });
@@ -96,7 +96,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
         } else {
             console.log("entro a else");
             console.log(vm.file);
-            $http.put('/cocinaN/' + $scope.cocina._id, $scope.cocina).then(function (response) {
+            $http.put('/barN/' + $scope.bar._id, $scope.bar).then(function (response) {
                 $scope.ShowAgregar = true;
                 refresh();
             });

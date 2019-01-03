@@ -23,12 +23,59 @@ router.use(function variablesGlobales(req, res, next) {
 
 router.get('/', function (req, res) {
     //if (req.session.usuario != null) {
-    var IngredientesExcluidos = [];
-    req.session.IngredientesExcluidos = IngredientesExcluidos;
-    res.sendFile(path.resolve('../public/SeleccionCocina.html'));
+    res.sendFile(path.resolve('../public/SeleccionIngreBar.html'));
     // } else {
     //     res.sendfile(__dirname + '/public/Login.html');
     // }    
+});
+
+router.get('/:id', function (req, res) {
+    var NumeroMesa = req.session.NumeroMesa
+    var NumeroSesion = -1;
+    var OrdenMesaResult = null;
+    var idPlato = req.params.id;
+    var sql = "";
+
+    req.session.save();
+    console.log("Id del plato: " + idPlato);
+
+
+    if (req.session.IngredientesExcluidos != null && req.session.IngredientesExcluidos.length > 0) {
+        sql = ` select id, nombre, descripcion, imagen 
+                from BarBebidaIngre cpl
+                join CatBarIngre cci on cpl.idIngre = cci.id
+                where idBebida = ${idPlato}
+                and idIngre not in (${req.session.IngredientesExcluidos.join(',')})`;
+    } else {
+        sql = ` select id, nombre, descripcion, imagen 
+                from BarBebidaIngre cpl
+                join CatBarIngre cci on cpl.idIngre = cci.id
+                where idBebida = ${idPlato}`;
+    }
+
+    con.query(sql, function (err, result, fields) {
+        if (err) throw err;
+        console.log(JSON.stringify(result));
+        res.json(result);
+    });
+
+});
+
+
+router.put('/:id/Ingrediente/:idIngrediente', function (req, res) {
+
+    var id = req.params.id;
+    var idIngrediente = req.params.idIngrediente;
+    var IngredientesExcluidos = req.session.IngredientesExcluidos;
+    console.log("Ingredientes excluidos");
+    console.log(req.session.IngredientesExcluidos);
+    IngredientesExcluidos.push(idIngrediente);
+    req.session.IngredientesExcluidos = IngredientesExcluidos;
+    console.log(req.session.IngredientesExcluidos.join(','));
+    req.session.save();
+    console.log(req.session.IngredientesExcluidos);
+    res.json({});
+
 });
 
 
@@ -37,8 +84,8 @@ router.post('/', function (req, res) {
     var NumeroSesion = -1;
     var OrdenMesaResult = null;
     var idPlato = req.body.iditemcocina;
-    req.session.OrdenMesa = "123";
-    req.session.otro = "123";
+    var IngredientesExcluidos = req.session.IngredientesExcluidos;
+
     console.log("Numero mesa: " + NumeroMesa);
     console.log("Numero mesa: " + idPlato);
 
@@ -70,19 +117,34 @@ router.post('/', function (req, res) {
                     console.log(JSON.stringify(result));
                     console.log("Id del plato: " + idPlato);
                     sql = `select id, nombre, descripcion, imagen 
-                    from CatCocinaPlato c
+                    from CatBarBebida c
                     where id = ${idPlato}`;
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
                         sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                         values = [
-                            [NumeroMesa, 1, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                            [NumeroMesa, 1, idPlato, 2, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                         ];
                         con.query(sql, [values], function (err, result) {
                             if (err) throw err;
+                            console.log("Correlativo");
                             console.log(JSON.stringify(result));
-                            res.json(result);
+
+
+
+                            console.log("Insertando ingre excluidos");
+                            for (var i = 0; i < IngredientesExcluidos.length; i++) {
+                                sql = "Insert into IngreRemovido (idDetalleOrdenMesa, idIngre)  VALUES ?";
+                                values = [
+                                    [result.insertId, IngredientesExcluidos[i]]
+                                ];
+                                con.query(sql, [values], function (err, result) {
+                                    if (err) throw err;
+                                    console.log(JSON.stringify(result));
+                                });
+                            }
+                            res.send({ redireccionar: "/SeleccionBar" });
                         });
                     });
                 });
@@ -105,19 +167,34 @@ router.post('/', function (req, res) {
                 if (sesionCerrada == 0) {
                     //La cuenta de la mesa sigue abierta, se asigna el plato a la cuenta actual.
                     sql = `select id, nombre, descripcion, imagen 
-                    from CatCocinaPlato c
+                    from CatBarBebida c
                     where id = ${idPlato}`;
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
                         sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                         values = [
-                            [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                            [NumeroMesa, NumeroSesion, idPlato, 2, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                         ];
                         con.query(sql, [values], function (err, result) {
                             if (err) throw err;
+                            console.log("Correlativo");
                             console.log(JSON.stringify(result));
-                            res.json(result);
+
+
+
+                            console.log("Insertando ingre excluidos");
+                            for (var i = 0; i < IngredientesExcluidos.length; i++) {
+                                sql = "Insert into IngreRemovido (idDetalleOrdenMesa, idIngre)  VALUES ?";
+                                values = [
+                                    [result.insertId, IngredientesExcluidos[i]]
+                                ];
+                                con.query(sql, [values], function (err, result) {
+                                    if (err) throw err;
+                                    console.log(JSON.stringify(result));
+                                });
+                            }
+                            res.send({ redireccionar: "/SeleccionBar" });
                         });
                     });
                 } else {
@@ -129,19 +206,45 @@ router.post('/', function (req, res) {
                     ];
                     con.query(sql, [values], function (err, result) {
                         sql = `select id, nombre, descripcion, imagen 
-                        from CatCocinaPlato c
+                        from CatBarBebida c
                         where id = ${idPlato}`;
                         con.query(sql, function (err, result, fields) {
                             if (err) throw err;
                             console.log(JSON.stringify(result));
                             sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                             values = [
-                                [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                                [NumeroMesa, NumeroSesion, idPlato, 2, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                             ];
                             con.query(sql, [values], function (err, result) {
                                 if (err) throw err;
+                                console.log("Correlativo");
                                 console.log(JSON.stringify(result));
-                                res.json(result);
+
+
+
+                                console.log("Insertando ingre excluidos");
+                                for (var i = 0; i < IngredientesExcluidos.length; i++) {
+                                    sql = "Insert into IngreRemovido (idDetalleOrdenMesa, idIngre)  VALUES ?";
+                                    values = [
+                                        [result.insertId, IngredientesExcluidos[i]]
+                                    ];
+                                    con.query(sql, [values], function (err, result) {
+                                        if (err) throw err;
+                                        console.log(JSON.stringify(result));
+
+                                    });
+
+                                }
+                                res.send({ redireccionar: "/SeleccionBar" });
+
+
+
+
+
+
+
+
+
                             });
                         });
                     });
@@ -149,26 +252,7 @@ router.post('/', function (req, res) {
             });
         }
     });
-
-    
 });
-
-router.post('/RedireccionarMesa', function (req, res) {
-    res.send({ redireccionar: '/SeleccionMesa' });
-});
-
-router.post('/RedireccionarOrden', function (req, res) {
-    res.send({ redireccionar: '/ResumenOrden' });
-});
-
-router.post('/RedireccionarBebidas', function (req, res) {
-    res.send({ redireccionar: '/SeleccionBar' });
-});
-
-router.post('/RedireccionarCuentaOrden', function (req, res) {
-    res.send({ redireccionar: '/Cuenta' });
-});
-
 
 Date.prototype.addHours = function (h) {
     this.setHours(this.getHours() + h);

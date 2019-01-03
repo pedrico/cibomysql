@@ -40,6 +40,14 @@ router.post('/CategoriaBar', function (req, res) {
     res.send({ redireccionar: '/SeleccionBar' });
 });
 
+router.post('/RedireccionarMesa', function (req, res) {
+    res.send({ redireccionar: '/SeleccionMesa' });
+});
+
+router.post('/RedireccionarOrden', function (req, res) {
+    res.send({ redireccionar: '/ResumenOrden' });
+});
+
 router.post('/CategoriaCerrarSesion', function (req, res) {
     req.session.NumeroMesa = null;
     req.session.usuario = null;

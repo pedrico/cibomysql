@@ -1,69 +1,79 @@
-var IngreCocinaModule = angular.module('IngreCocinaModule', ['ngFileUpload']);
+var IngreBarModule = angular.module('IngreBarModule', ['ngFileUpload']);
 
-IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$window', function ($scope, $http, Upload, $window) {
+IngreBarModule.controller('CtrlIngreBar', ['$scope', '$http', 'Upload', '$window', function ($scope, $http, Upload, $window) {
 
     var refresh = function () {
         var idplato = getUrlParameter('plato');
         
-        $http.get('/BarBebidaIngre/ListaGrid/' + idplato).then(function (response) {
+        $http.get('/SeleccionIngreBar/' + idplato).then(function (response) {
             console.log("-------------Refresh" + idplato);
             console.log(response.data);
-            $scope.IngreCocinaList = response.data;
-            console.log($scope.IngreCocinaList);
+            $scope.IngreBarList = response.data;
+            console.log($scope.IngreBarList);
             $scope.ShowAgregar = true;
             $scope.ShowActualizar = false;
             $scope.ShowLimpiar = true;
             //Limpia el contacto recien agregado
-            $scope.cocina = null;
+            //$scope.bar = null;
             vm.file = null;
             vm.progress = null;
+            $http.get('/CatBar/bar/' + idplato).then(function (response) {
+                console.log("Titulo plato");
+                console.log(response);
+                $scope.cocina = response.data;
+            });
         });
 
         //ComboBox
-        $http.get('/BarBebidaIngre/Listaddl').then(function (response) {
-            $scope.names = response.data;
-        });
+        // $http.get('/ListIngredientes').then(function (response) {
+        //     $scope.names = response.data;
+        // });
     };
     refresh();
 
-    $scope.addContact = function () {
-        if (angular.isUndefined($scope.ingreSeleccionado)) {
-            $window.alert('Seleccione un ingrediente');
-        }
-        else {
-            var idplato = getUrlParameter('plato');
-            console.log($scope.ingreSeleccionado);
-            $http.post('/BarBebidaIngre/' + idplato, $scope.ingreSeleccionado).then(function (response) {
-                console.log(response);
-                refresh();
-            });
-        }
+    $scope.addItem = function (id) {
+        var idplato = getUrlParameter('plato');
+        var DetalleOrdenMesa = { iditemcocina: idplato }
+        console.log("Agregar Item");        
+        $http.post('/SeleccionIngreBar', DetalleOrdenMesa).then(function (response) {            
+            $window.location.href= response.data.redireccionar;
+        });   
     };
 
-    $scope.remove = function (id) {
+    $scope.remove = function (id, nombre) {
         var idplato = getUrlParameter('plato');
         console.log(id);
-        $http.delete('/BarBebidaIngre/' + idplato+"/Ingrediente/"+id).then(function (response) {
+        $http.put('/SeleccionIngreBar/' + idplato+"/Ingrediente/"+id).then(function (response) {
+            console.log(response.data);            
+            // $scope.alerta = { mensaje: response.data.nombre, visible: true };            
             console.log("Actualiza despues de eliminar")
+            $scope.alerta = { mensaje: nombre, visible: true };            
             refresh();
+        });
+
+    };
+
+    $scope.cancelar = function (id) {            
+        $http.post('/Categoria/CategoriaBar').then(function(res){
+            $window.location.href= res.data.redireccionar;
         });
     };
 
     $scope.edit = function (id) {
         console.log(id);
-        $http.get('/cocina/' + id).then(function (response) {
+        $http.get('/bar/' + id).then(function (response) {
             console.log(response);
-            $scope.cocina = response.data;
+            $scope.bar = response.data;
             $scope.ShowAgregar = false;
             $scope.ShowActualizar = true;
             $scope.ShowLimpiar = true;
-            vm.file = "http://localhost:4201/" + response.data.imagen;
+            vm.file = "http://localhost:4200/" + response.data.imagen;
         });
     };
 
     $scope.redireccionar = function (id) {
         console.log(id + "--hola");
-        $http.get('/RedirectIngreCocina').then(function (data, status) {
+        $http.get('/RedirectIngreBar').then(function (data, status) {
 
         });
     };
@@ -73,8 +83,8 @@ IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$
             vm.upload(vm.file); //call upload function            
         }
 
-        console.log($scope.cocina._id);
-        $http.put('/cocina/' + $scope.cocina._id, $scope.cocina).then(function (response) {
+        console.log($scope.bar._id);
+        $http.put('/bar/' + $scope.bar._id, $scope.bar).then(function (response) {
             $scope.ShowAgregar = true;
             refresh();
         });
@@ -99,7 +109,7 @@ IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$
     }
     vm.upload = function (file) {
         Upload.upload({
-            url: 'http://localhost:4201/upload', //webAPI exposed to upload the file
+            url: 'http://localhost:4200/upload', //webAPI exposed to upload the file
             data: { file: file } //pass file as data, should be user ng-model
         }).then(function (resp) { //upload function returns a promise
             if (resp.data.error_code === 0) { //validate success
@@ -134,12 +144,5 @@ IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$
             }
         }
     };
-
-
-
-
-
-
-
 }]);
 
