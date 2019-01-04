@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="/css/bootstrap-Sandstone.css">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/angular.min.js"></script>
+
+    <title>
+        Cuenta
+    </title>
+</head>
+
+<body ng-app="ResumenOrdenModule">
+    <div style="background-image: url('/Imagenes/wood2.jpg') ">
+        <div ng-include="'header.html'"></div>
+        <form class="container" ng-controller="CtrlResumenOrden as up" name="up.upload_form">
+
+            <h1>Cuenta</h1>
+            <!-- <input ng-model="test"> {{test}} -->
+            <div class="row">
+                <div class="col-sm-9">
+                </div>
+                <div class="col-sm-3">
+                    <span class="badge badge-pill badge-info" style="font-size: 25px">Mesa: {{NumeroMesa}}</span>
+                    <!-- <label style="font-size: 25px">Mesa: {{NumeroMesa}} </label> -->
+                </div>
+            </div>
+
+            <table class="table table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Subtotal</th>                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in cocinaList">
+                        <!-- <td>{{cocina.cantidad}}</td> -->
+                        <td>1</td>
+                        <td style="font-weight: bolder">{{cocina.nombre}}</td>
+                        <td>
+                            {{cocina.subtotal | currency: 'Q. '}}
+                        </td>                        
+                    </tr>
+                    <!-- Bar -->
+                    <tr class="table-secondary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in cocinaListBar">
+                        <!-- <td>{{cocina.cantidad}}</td> -->
+                        <td>1</td>
+                        <td style="font-weight: bolder">{{cocina.nombre}}</td>
+                        <td>
+                            {{cocina.subtotal | currency: 'Q. '}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="font-weight: bolder">Total</td>
+                        <td>
+                            <span class="badge badge-success" style="font-size: 100%; color:black" >{{getTotal() | currency: 'Q. '}}</span>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-sm-4">
+                    
+                </div>
+                <div class="col-sm-4">
+                    <button class="btn btn-success" ng-click="agregar()" style="font-size: 50px; width: 100%">+</button>
+                </div>
+                <div class="col-sm-4">
+                    <button class="btn btn-warning" ng-click="pagarOrden()" style="width: 100%">Pagada</button>
+                </div>
+            </div>
+
+        </form>
+        <div ng-include="'footer.html'"></div>
+    </div>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
+    <script src="controllers/CuentaController.js"></script>
+
+</body>
+
+</html>

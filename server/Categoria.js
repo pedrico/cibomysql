@@ -48,6 +48,11 @@ router.post('/RedireccionarOrden', function (req, res) {
     res.send({ redireccionar: '/ResumenOrden' });
 });
 
+
+router.post('/RedireccionarCuentaOrden', function (req, res) {
+    res.send({ redireccionar: '/Cuenta' });
+});
+
 router.post('/CategoriaCerrarSesion', function (req, res) {
     req.session.NumeroMesa = null;
     req.session.usuario = null;

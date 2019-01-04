@@ -125,7 +125,7 @@ router.put('/ResumenOrdenDetalle', function (req, res) {
     // idDetallesEnviar = [ idDetallesEnviar.slice(0, -1) ]; //Se elimina el último caracter
     console.log(idDetallesEnviar);
 
-    var sql = `UPDATE DetalleOrdenMesa SET enviada = 1 WHERE id in (${idDetallesEnviar.join(',')});`;
+    var sql = `UPDATE DetalleOrdenMesa SET enviada = 1, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE id in (${idDetallesEnviar.join(',')});`;
 
     con.query(sql, function (err, result) {
         if (err) throw err;
@@ -153,7 +153,7 @@ router.put('/ResumenOrdenDetalleCancelar', function (req, res) {
     // idDetallesEnviar = [ idDetallesEnviar.slice(0, -1) ]; //Se elimina el último caracter
     console.log(idDetallesEnviar);
 
-    var sql = `UPDATE DetalleOrdenMesa SET enviada = 3 WHERE id in (${idDetallesEnviar.join(',')});`;
+    var sql = `UPDATE DetalleOrdenMesa SET enviada = 3, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE id in (${idDetallesEnviar.join(',')});`;
 
     con.query(sql, function (err, result) {
         if (err) throw err;

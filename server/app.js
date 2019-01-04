@@ -9,7 +9,8 @@ var con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "123pc",
-    database: "restaurante"
+    database: "restaurante",
+    timezone: "utc"
 });
 
 var app = express();
@@ -40,6 +41,8 @@ var SeleccionBar = require('./SeleccionBar');
 var ResumenOrden = require('./ResumenOrden');
 var SeleccionIngreCocina = require('./SeleccionIngreCocina');
 var SeleccionIngreBar = require('./SeleccionIngreBar');
+var Cuenta = require('./Cuenta');
+var ReporteTotalDia = require('./ReporteTotalDia');
 
 app.use('/CatCocina', CatCocina);
 app.use('/CatCocinaIngre', CatCocinaIngre);
@@ -54,6 +57,8 @@ app.use('/SeleccionBar', SeleccionBar);
 app.use('/ResumenOrden', ResumenOrden);
 app.use('/SeleccionIngreCocina', SeleccionIngreCocina);
 app.use('/SeleccionIngreBar', SeleccionIngreBar);
+app.use('/Cuenta', Cuenta);
+app.use('/ReporteTotalDia', ReporteTotalDia);
 
 
 con.connect(function (err) {
