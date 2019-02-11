@@ -15,11 +15,11 @@ router.use(function variablesGlobales(req, res, next) {
 });
 
 router.get('/', function (req, res) {
-    //if (req.session.usuario != null) {
-    res.sendFile(path.resolve('../public/ReporteTotalDia.html'));
-    // } else {
-    //     res.sendfile(__dirname + '/public/Login.html');
-    // }    
+    if (req.session.usuario != null) {
+        res.sendFile(path.resolve('../public/ReporteTotalDia.html'));
+    } else {
+        res.sendfile(path.resolve('../public/Login.html'));
+    }
 });
 
 router.post('/ReporteTotalDiaDetalleCocina', function (req, res) {
@@ -39,17 +39,19 @@ router.post('/ReporteTotalDiaDetalleCocina', function (req, res) {
 
 
 
-    sql = ` select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , ccp.precio from 
-    Mesa m
-    join Sesion s on m.id = s.IdMesa
-    join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
-    join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1 
-    where dom.Enviada = 4
-    and dom.fechaUpdate >= '${fechaini}' 
-    and dom.fechaUpdate <= '${fechafin}'
-    order by dom.fechaUpdate;
-        `;
-
+    sql = ` select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , dom.precio, dom.cantidad, dom.precio * dom.cantidad as subtotal, ccc.nombre as categoria
+            from 
+            Mesa m
+            join Sesion s on m.id = s.IdMesa
+            join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+            join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1 
+            left join CatCocinaCategoria ccc on ccc.id = ccp.idCocinaCategoria
+            where dom.Enviada = 4
+            and dom.fechaUpdate >= '${fechaini}' 
+            and dom.fechaUpdate <= '${fechafin}'
+            order by dom.fechaUpdate;
+                `;
+    console.log(sql);
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
@@ -59,8 +61,8 @@ router.post('/ReporteTotalDiaDetalleCocina', function (req, res) {
 
 });
 
-var fechaMySQL = function (fechaJson){
-    var resultado = fechaJson.anio + "-"+ (fechaJson.mes + 1) + "-"+  fechaJson.dia + " "+ fechaJson.hora+ ":"+ fechaJson.minuto+ ":00";
+var fechaMySQL = function (fechaJson) {
+    var resultado = fechaJson.anio + "-" + (fechaJson.mes + 1) + "-" + fechaJson.dia + " " + fechaJson.hora + ":" + fechaJson.minuto + ":00";
     return resultado;
 }
 
@@ -81,17 +83,19 @@ router.post('/ReporteTotalDiaDetalleBar', function (req, res) {
 
 
 
-    sql = ` select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , ccp.precio from 
-    Mesa m
-    join Sesion s on m.id = s.IdMesa
-    join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
-    join CatBarBebida ccp on dom.IdItem = ccp.Id and dom.Categoria = 2
-    where dom.Enviada = 4
-    and dom.fechaUpdate >= '${fechaini}' 
-    and dom.fechaUpdate <= '${fechafin}'
-    order by dom.fechaUpdate;
-        `;
-
+    sql = ` select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , dom.precio, dom.cantidad, dom.precio * dom.cantidad as subtotal, cbc.nombre as categoria
+            from 
+            Mesa m
+            join Sesion s on m.id = s.IdMesa
+            join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+            join CatBarBebida ccp on dom.IdItem = ccp.Id and dom.Categoria = 2
+            left join CatBarCategoria cbc on cbc.id = ccp.idBarCategoria
+            where dom.Enviada = 4
+            and dom.fechaUpdate >= '${fechaini}' 
+            and dom.fechaUpdate <= '${fechafin}'
+            order by dom.fechaUpdate;
+                `;
+    console.log(sql);
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
@@ -101,8 +105,8 @@ router.post('/ReporteTotalDiaDetalleBar', function (req, res) {
 
 });
 
-var fechaMySQL = function (fechaJson){
-    var resultado = fechaJson.anio + "-"+ (fechaJson.mes + 1) + "-"+  fechaJson.dia + " "+ fechaJson.hora+ ":"+ fechaJson.minuto+ ":00";
+var fechaMySQL = function (fechaJson) {
+    var resultado = fechaJson.anio + "-" + (fechaJson.mes + 1) + "-" + fechaJson.dia + " " + fechaJson.hora + ":" + fechaJson.minuto + ":00";
     return resultado;
 }
 

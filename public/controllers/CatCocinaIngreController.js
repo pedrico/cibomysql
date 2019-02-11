@@ -11,7 +11,7 @@ IngredienteModule.controller('CtrlIngrediente', ['$scope', '$http','Upload','$wi
             $scope.ShowLimpiar = true;
             //Limpia el contacto recien agregado
             $scope.cocina = null;
-            vm.file = null;
+            $scope.up.file = null;
             vm.progress = null;
         });
     };
@@ -56,7 +56,14 @@ IngredienteModule.controller('CtrlIngrediente', ['$scope', '$http','Upload','$wi
             $scope.ShowAgregar = false;
             $scope.ShowActualizar = true;
             $scope.ShowLimpiar = true;
-            vm.file = "http://localhost:4201/"+ response.data.imagen;
+            if (response.data.imagen == null) {
+                console.log("imagen null");                
+                $scope.up.file = null;
+            }
+            else {
+                console.log("Con imagen");
+                vm.file = "http://localhost:4201/" + response.data.imagen;
+            }
         });
     };
 

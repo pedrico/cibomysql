@@ -1,0 +1,15 @@
+{
+    "short_name": "Habitat",
+    "name": "Habitat",
+    "icons": [
+      {
+        "src":"",
+        "sizes": "",
+        "type": ""
+      }
+    ],
+    "start_url": "",
+    "background_color": "#000",
+    "theme_color": "#536878",
+    "display": "standalone"
+  }

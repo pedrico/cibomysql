@@ -16,15 +16,28 @@ router.use(function variablesGlobales(req, res, next) {
 
 router.get('/', function (req, res) {
     if (req.session.usuario != null) {
-        res.sendFile(path.resolve('../public/Categoria.html'));
+        res.sendFile(path.resolve('../public/CategoriaCocinaBar.html'));
     } else {
         res.sendfile(path.resolve('../public/Login.html'));
     }
 });
 
-router.get('/CategoriaSesionMesa', function (req, res) {
-    var SesionMesa = { NumeroMesa: req.session.NumeroMesa };
-    res.send(SesionMesa);
+router.get('/Cocina', function (req, res) {
+    var sql = `select * from CatCocinaCategoria order by nombre asc;`;
+    con.query(sql, function (err, result, fields) {
+        if (err) throw err;
+        console.log(JSON.stringify(result));
+        res.json(result);
+    });
+});
+
+router.get('/Bar', function (req, res) {
+    var sql = `select * from CatBarCategoria order by nombre asc;`;
+    con.query(sql, function (err, result, fields) {
+        if (err) throw err;
+        console.log(JSON.stringify(result));
+        res.json(result);
+    });
 });
 
 router.post('/CategoriaCocina', function (req, res) {
@@ -33,7 +46,7 @@ router.post('/CategoriaCocina', function (req, res) {
     req.session.save();
     console.log("Set NuevoPlato = null");
     console.log(req.session);
-    res.send({ redireccionar: '/CategoriaCocinaBar?seccion=1' });
+    res.send({ redireccionar: '/SeleccionCocina' });
 });
 
 router.post('/CategoriaBar', function (req, res) {
@@ -42,26 +55,7 @@ router.post('/CategoriaBar', function (req, res) {
     req.session.save();
     console.log("Set NuevoPlato = null");
     console.log(req.session);
-    res.send({ redireccionar: '/CategoriaCocinaBar?seccion=2' });
-});
-
-router.post('/RedireccionarMesa', function (req, res) {
-    res.send({ redireccionar: '/SeleccionMesa' });
-});
-
-router.post('/RedireccionarOrden', function (req, res) {
-    res.send({ redireccionar: '/ResumenOrden' });
-});
-
-
-router.post('/RedireccionarCuentaOrden', function (req, res) {
-    res.send({ redireccionar: '/Cuenta' });
-});
-
-router.post('/CategoriaCerrarSesion', function (req, res) {
-    req.session.NumeroMesa = null;
-    req.session.usuario = null;
-    res.send({ redireccionar: '/Login' });
+    res.send({ redireccionar: '/SeleccionBar' });
 });
 
 

@@ -12,8 +12,15 @@
     <script src="/js/angular.min.js"></script>
     <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.0.3.js"></script>
 
+    <!-- 
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
+
+
+
     <title>
-        Agregar a la Orden
+        Agregar Platos a la Orden
     </title>
 </head>
 
@@ -22,11 +29,11 @@
         <div ng-include="'header.html'"></div>
 
         <form class="container" ng-controller="AppCtrl as up" name="up.upload_form">
-            <div ng-include="'AccesosDirectos.html'"></div>
+            <div ng-include="'AccesosDirectos.html'" style="width: 100%"></div>
             <br>
             <div class="row">
                 <div class="col-md-4">
-                    <h1>Agregar a la Orden</h1>
+                    <h1>Agregar Platos a la Orden</h1>
                     <!-- <input ng-model="test"> {{test}} -->
                 </div>
                 <div class="col-md-5"></div>
@@ -41,7 +48,6 @@
 
             <div class="alert alert-success alert-dismissible" ng-show="alerta.visible">
                 <!-- <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> -->
-                1
                 <strong>{{alerta.mensaje}}</strong> agregado(a).
             </div>
 
@@ -59,6 +65,7 @@
                     <tr>
                         <th scope="col">Nombre</th>
                         <th scope="col">Descripción</th>
+                        <th scope="col">Cantidad</th>
                         <th scope="col">Precio</th>
                         <!-- <th scope="col">Imagen</th> -->
                         <th>&nbsp;</th>
@@ -66,15 +73,48 @@
                     </tr>
                 </thead>
                 <tbody>
-                        <tr class="table-primary" style="color: rgb(67, 67, 77);" ng-repeat="cocina in cocinaList | filter: searchBox" >
+                    <tr class="table-primary" style="color: rgb(67, 67, 77);" ng-repeat="cocina in cocinaList | filter: searchBox">
                         <td style="font-weight: bolder">{{cocina.nombre}}</td>
-                        <td>{{cocina.descripcion}}</td>
+                        <td>{{cocina.categoria}}</td>
+                        <td>
+                            <div class="input-group number-spinner">
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-danger" data-dir="up" ng-click="decrementar10(cocina)">
+                                        -10
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                                <label>&nbsp&nbsp&nbsp</label>
+                                <span class="input-group-btn data-dwn">
+                                    <button class="btn btn-default btn-info" data-dir="dwn" ng-click="(cocina.cantidad == null) ? cocina.cantidad = 1 : (cocina.cantidad > 1 ? cocina.cantidad = cocina.cantidad - 1 : cocina.cantidad = 1);"
+                                        ng-mousedown='mouseDown(cocina, "down")' ng-mouseup="mouseUp()">
+                                        -
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </span>
+                                <input type="text" class="form-control text-center" ng-model="cocina.cantidad" min="-10" max="40">
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-info" data-dir="up" ng-click="incrementar(cocina)" ng-mousedown='mouseDown(cocina, "up")'
+                                        ng-mouseup="mouseUp()">
+                                        +
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                                <label>&nbsp&nbsp&nbsp</label>
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-warning" data-dir="up" ng-click="incrementar10(cocina)">
+                                        +10
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </td>
                         <td>{{cocina.precio}}</td>
                         <!-- <td>
                             <img class="logo" src="http://localhost:4201/{{cocina.imagen}}" style="width:100px;" alt="Imagen">
                         </td> -->
                         <td>
-                            <button class="btn btn-success" ng-click="addItem(cocina.id)"> + </button>
+                            <button class="btn btn-success" ng-click="addItem(cocina.id, cocina.cantidad)"> Agregar </button>
                         </td>
                         <td>
                             <a href="http://localhost:4201/SeleccionIngreCocina?plato={{cocina.id}}" class="btn btn-warning">Ingre</a>

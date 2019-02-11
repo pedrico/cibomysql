@@ -9,7 +9,7 @@ CategoriaModule.controller('CtrlCategoria', ['$scope', '$http','$window', functi
             $scope.NumeroMesa = response.data.NumeroMesa;
         });
 
-        $http.get('/UsrLogin').then(function (response) {             
+        $http.get('Login/UsrLogin').then(function (response) {             
             $scope.usuario = response.data.usuario;                    
         });
     };

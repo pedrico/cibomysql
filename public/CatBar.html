@@ -44,7 +44,7 @@
                 <thead>
                     <tr>
                         <th scope="col">Nombre</th>
-                        <th scope="col">Descripción</th>
+                        <th scope="col">Categoría</th>
                         <th scope="col">Precio</th>
                         <th scope="col">Imagen</th>
                         <th>&nbsp;</th>
@@ -58,14 +58,17 @@
                             <input required class="form-control" ng-model="cocina.nombre">
                         </td>
                         <td>
-                            <input required class="form-control" ng-model="cocina.descripcion">
+                            <!-- <input required class="form-control" ng-model="cocina.descripcion"> -->                            
+                            <!-- Track by x.id lo utilizo para poder cambiar el item seleccionado desde el controlador -->
+                            <select class="form-control" ng-model="categoriaSeleccionada" ng-options="x.nombre  for x in categorias track by x.id">
+                            </select>
                         </td>
                         <td>
                             <input type="number" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" required class="form-control" ng-model="cocina.precio">
                         </td>
                         <td>
                             <div>
-                                <input  type="file" ngf-select ng-model="up.file" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="20MB"
+                                <input type="file" ngf-select ng-model="up.file" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="20MB"
                                 />
                                 <img style="width:50px;" ng-show="!!up.file" ngf-thumbnail="up.file || 'Imagenes/subir.png'" />
                                 <!-- <i ng-show="up.upload_form.file.$error.required">*obligatorio</i> -->
@@ -91,7 +94,7 @@
                     </tr>
                     <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in filterData = (cocinaList | filter: searchBox) | limitTo:5:5*(page-1)">
                         <td style="font-weight: bolder">{{cocina.nombre}}</td>
-                        <td>{{cocina.descripcion}}</td>
+                        <td>{{cocina.categoria}}</td>
                         <td>{{cocina.precio}}</td>
                         <td>
                             <img class="logo" src="http://localhost:4201/{{cocina.imagen}}" style="width:100px;" alt="Imagen">
@@ -119,8 +122,8 @@
                     {{tic}}
                 </div> -->
 
-                <uib-pagination class="pagination-sm pagination" total-items="filterData.length" ng-model="page"
-                ng-change="pageChanged()" previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page=5></uib-pagination>
+            <uib-pagination class="pagination-sm pagination" total-items="filterData.length" ng-model="page" ng-change="pageChanged()"
+                previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page=5></uib-pagination>
 
         </form>
         <div ng-include="'footer.html'"></div>

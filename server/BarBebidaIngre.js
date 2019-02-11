@@ -5,27 +5,27 @@ var con;
 var path;
 var nombreArchivo;
 
-router.use(function variablesGlobales(req,res,next){
+router.use(function variablesGlobales(req, res, next) {
     console.log("obteniendo conexion");
-    con  = req.app.get('con');
-    path  = req.app.get('path');
+    con = req.app.get('con');
+    path = req.app.get('path');
     nombreArchivo = req.app.get('nombreArchivo');;
     console.log("conexion obtenida");
     next();
 });
 
 router.get('/', function (req, res) {
-    //if (req.session.usuario != null) {
-    res.sendFile(path.resolve('../public/BarBebidaIngre.html'));
-    // } else {
-    //     res.sendfile(__dirname + '/public/Login.html');
-    // }    
+    if (req.session.usuario != null) {
+        res.sendFile(path.resolve('../public/BarBebidaIngre.html'));
+    } else {
+        res.sendfile(path.resolve('../public/Login.html'));
+    }
 });
 
 //Lista de ingredientes para grid
 router.get('/ListaGrid/:id', function (req, res) {
     var id = req.params.id;
-    console.log("Id del plato: "+id);
+    console.log("Id del plato: " + id);
     var sql = ` select id, nombre, descripcion, imagen 
                 from BarBebidaIngre cpl
                 join CatBarIngre cci on cpl.idIngre = cci.id
@@ -38,7 +38,7 @@ router.get('/ListaGrid/:id', function (req, res) {
 });
 
 //Lista de ingredientes para drop down list (combobox)
-router.get('/Listaddl', function (req, res) {        
+router.get('/Listaddl', function (req, res) {
     var sql = ` select * from CatBarIngre `;
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
@@ -48,8 +48,8 @@ router.get('/Listaddl', function (req, res) {
 });
 
 router.post('/:id', function (req, res) {
-    var idBebida = req.params.id;  
-    var idIngre = req.body.id;  
+    var idBebida = req.params.id;
+    var idIngre = req.body.id;
     console.log(req.body);
     var sql = "INSERT INTO BarBebidaIngre (idBebida, idIngre) VALUES ?";
     var values = [

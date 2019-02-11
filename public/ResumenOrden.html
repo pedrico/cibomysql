@@ -44,11 +44,11 @@
                 </thead>
                 <tbody>
                     <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in cocinaList">
-                        <td>1</td>
+                        <td>{{cocina.cantidad}}</td>
                         <td style="font-weight: bolder">{{cocina.nombre}}</td>
-                        <td style="font-weight: bolder">{{cocina.descripcion}}</td>
+                        <td style="font-weight: bolder">{{cocina.categoria}}</td>
                         <td>
-                            <span class="badge badge-danger" style="font-size: 100%" >{{cocina.ingre}} </span>
+                            <span class="badge badge-danger" style="font-size: 100%" >{{cocina.ingre}}</span>
                         </td>
                         <td>
                             <!-- <button class="btn btn-success" ng-click="addItem(cocina._id)">
@@ -60,9 +60,9 @@
                     </tr>
                     <!-- Bar -->
                     <tr class="table-secondary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in cocinaListBar">
-                        <td>1</td>
+                        <td>{{cocina.cantidad}}</td>
                         <td style="font-weight: bolder">{{cocina.nombre}}</td>
-                        <td style="font-weight: bolder">{{cocina.descripcion}}</td>
+                        <td style="font-weight: bolder">{{cocina.categoria}}</td>
                         <td>
                             <span class="badge badge-danger" style="font-size: 100%" >{{cocina.ingre}}</span>
                         </td>

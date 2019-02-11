@@ -16,7 +16,7 @@
     <!-- <script src="https://code.angularjs.org/1.4.8/angular.js"></script> -->
     <script src="/js/ui-bootstrap-tpls-1.0.3.js"></script>
     <title>
-        Cocina
+        Categoría Cocina
     </title>
 </head>
 
@@ -28,7 +28,7 @@
 
             <div class="row">
                 <div class="col-md-4">
-                    <h1>Cocina</h1>
+                    <h1>Categoría Cocina</h1>
                     <!-- <input ng-model="test"> {{test}} -->
                 </div>
                 <div class="col-md-5"></div>
@@ -44,8 +44,6 @@
                 <thead>
                     <tr>
                         <th scope="col">Nombre</th>
-                        <th scope="col">Categoría</th>
-                        <th scope="col">Precio</th>
                         <th scope="col">Imagen</th>
                         <th>&nbsp;</th>
                         <th>&nbsp;</th>
@@ -56,16 +54,7 @@
                     <tr>
                         <td>
                             <input required class="form-control" ng-model="cocina.nombre">
-                        </td>
-                        <td>
-                            <!-- <input required class="form-control" ng-model="cocina.descripcion"> -->
-                            <!-- Track by x.id lo utilizo para poder cambiar el item seleccionado desde el controlador -->
-                            <select class="form-control" ng-model="categoriaSeleccionada" ng-options="x.nombre  for x in categorias track by x.id">
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" required class="form-control" ng-model="cocina.precio">
-                        </td>
+                        </td>                        
                         <td>
                             <div>
                                 <input type="file" ngf-select ng-model="up.file" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="20MB"
@@ -82,7 +71,7 @@
                             </div>
                         </td>
                         <td>
-                            <button ng-show="ShowAgregar" class="btn btn-primary" ng-disabled="up.upload_form.$invalid" ng-click="addContact()">Agregar Plato</button>
+                            <button ng-show="ShowAgregar" class="btn btn-primary" ng-disabled="up.upload_form.$invalid" ng-click="addContact()">Agregar Categoría</button>
                             <button ng-show="ShowActualizar" class="btn btn-info" ng-click="update()">Actualizar</button>
                         </td>
                         <td>
@@ -93,17 +82,11 @@
                         </td>
                     </tr>
                     <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in filterData = (cocinaList | filter: searchBox) | limitTo:5:5*(page-1)">
-                        <td style="font-weight: bolder">{{cocina.nombre}}</td>
-                        <td>{{cocina.categoria}}</td>
-                        <td>{{cocina.precio}}</td>
+                        <td style="font-weight: bolder">{{cocina.nombre}}</td>                                                
                         <td>
                             <img class="logo" src="http://localhost:4201/{{cocina.imagen}}" style="width:100px;" alt="Imagen">
                         </td>
-                        <td>
-                            <a href="http://localhost:4201/CocinaPlatoIngre?plato={{cocina.id}}" class="btn btn-success">Ingredientes</a>
-                            <!-- <a href="http://localhost:4201/IngreCocina" class="btn btn-success">Ingredientes</a> -->
-                            <!-- <button class="btn btn-danger" ng-click="redireccionar(cocina._id)">Ingredientes</button> -->
-                        </td>
+                        
                         <td>
                             <button class="btn btn-danger" ng-click="remove(cocina.id)">Eliminar</button>
                         </td>
@@ -129,7 +112,7 @@
         <div ng-include="'footer.html'"></div>
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
-    <script src="controllers/CatCocinaController.js"></script>
+    <script src="controllers/CatCocinaCategoriaController.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
 

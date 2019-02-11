@@ -15,11 +15,16 @@ router.use(function variablesGlobales(req, res, next) {
 });
 
 router.get('/', function (req, res) {
-    //if (req.session.usuario != null) {
-    res.sendFile(path.resolve('../public/ResumenOrden.html'));
-    // } else {
-    //     res.sendfile(__dirname + '/public/Login.html');
-    // }    
+    if (req.session.usuario != null) {
+        //Para el áre de seleccion de platos, debe validarse que la mesa haya sido seleccionada
+        if (req.session.NumeroMesa != null) {
+            res.sendFile(path.resolve('../public/ResumenOrden.html'));
+        } else {
+            res.sendfile(path.resolve('../public/SeleccionMesa.html'));
+        }
+    } else {
+        res.sendfile(path.resolve('../public/Login.html'));
+    }
 });
 
 router.get('/ResumenOrdenDetalle', function (req, res) {
@@ -36,31 +41,36 @@ router.get('/ResumenOrdenDetalle', function (req, res) {
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
-        NumeroSesion = result[0].num;
+        if (result.length > 0) { //Si la mesa nunca ha sido seleccionada, la sesion no existe y el arreglo devuelto es vacío.
+            NumeroSesion = result[0].num;
 
-        sql = ` select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, GROUP_CONCAT(cci.nombre SEPARATOR ' - ') as ingre from 
-        Mesa m
-        join Sesion s on m.id = s.IdMesa
-        join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
-        join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1
-        left join IngreRemovido ir on dom.Id = ir.idDetalleOrdenMesa
-        left join CatCocinaIngre cci on ir.idIngre = cci.id
-        where m.id = ${NumeroMesa}
-        and s.num = ${NumeroSesion}
-        and s.Cerrada = 0
-        and dom.Enviada = 0
-        group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion;
-        `;
+            sql = ` select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.cantidad, GROUP_CONCAT(cci.nombre SEPARATOR ' - ') as ingre, ccc.nombre as categoria
+            from 
+            Mesa m
+            join Sesion s on m.id = s.IdMesa
+            join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+            join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1
+            left join IngreRemovido ir on dom.Id = ir.idDetalleOrdenMesa
+            left join CatCocinaIngre cci on ir.idIngre = cci.id
+            left join CatCocinaCategoria ccc on ccc.id = ccp.idCocinaCategoria
+            where m.id = ${NumeroMesa}
+            and s.num = ${NumeroSesion}
+            and s.Cerrada = 0
+            and dom.Enviada = 0
+            group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad;
+            `;
 
-        if (result.length == 0) {
-            res.json({});
-        }
-        else {
-            con.query(sql, function (err, result, fields) {
-                if (err) throw err;
-                console.log(JSON.stringify(result));
-                res.json(result);
-            });
+            if (result.length == 0) {
+                res.json({});
+            }
+            else {
+                con.query(sql, function (err, result, fields) {
+                    if (err) throw err;
+                    console.log(JSON.stringify(result));
+                    res.json(result);
+                });
+            }
+
         }
     });
 });
@@ -79,31 +89,35 @@ router.get('/ResumenOrdenDetalleBar', function (req, res) {
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
-        NumeroSesion = result[0].num;
+        if (result.length > 0) { //Si la mesa nunca ha sido seleccionada, la sesion no existe y el arreglo devuelto es vacío.
+            NumeroSesion = result[0].num;
 
-        sql = ` select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, GROUP_CONCAT(cci.nombre SEPARATOR ' - ') as ingre from 
-        Mesa m
-        join Sesion s on m.id = s.IdMesa
-        left join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
-        join CatBarBebida ccp on dom.IdItem = ccp.Id and dom.Categoria = 2
-        left join IngreRemovido ir on dom.Id = ir.idDetalleOrdenMesa
-        left join CatBarIngre cci on ir.idIngre = cci.id
-        where m.id = ${NumeroMesa}
-        and s.num = ${NumeroSesion}
-        and s.Cerrada = 0
-        and dom.Enviada = 0
-        group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion;
-        `;
+            sql = ` select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.cantidad, GROUP_CONCAT(cci.nombre SEPARATOR ' - ') as ingre, cbc.nombre as categoria 
+            from 
+            Mesa m
+            join Sesion s on m.id = s.IdMesa
+            left join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+            join CatBarBebida ccp on dom.IdItem = ccp.Id and dom.Categoria = 2
+            left join IngreRemovido ir on dom.Id = ir.idDetalleOrdenMesa
+            left join CatBarIngre cci on ir.idIngre = cci.id
+            left join CatBarCategoria cbc on cbc.id = ccp.idBarCategoria
+            where m.id = ${NumeroMesa}
+            and s.num = ${NumeroSesion}
+            and s.Cerrada = 0
+            and dom.Enviada = 0
+            group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad;
+            `;
 
-        if (result.length == 0) {
-            res.json({});
-        }
-        else {
-            con.query(sql, function (err, result, fields) {
-                if (err) throw err;
-                console.log(JSON.stringify(result));
-                res.json(result);
-            });
+            if (result.length == 0) {
+                res.json({});
+            }
+            else {
+                con.query(sql, function (err, result, fields) {
+                    if (err) throw err;
+                    console.log(JSON.stringify(result));
+                    res.json(result);
+                });
+            }
         }
     });
 });

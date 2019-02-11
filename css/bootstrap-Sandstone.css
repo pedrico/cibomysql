@@ -568,19 +568,21 @@
    width: 100%;
    padding-right: 15px;
    padding-left: 15px;
+   /* margin-right: auto;
+   margin-left: auto; */
    margin-right: auto;
    margin-left: auto;
  }
  
  @media (min-width: 576px) {
    .container {
-     max-width: 540px;
+     max-width: 1040px;
    }
  }
  
  @media (min-width: 768px) {
    .container {
-     max-width: 720px;
+     max-width: 1220px;
    }
  }
  
@@ -4496,7 +4498,7 @@
    word-wrap: break-word;
    background-color: #fff;
    background-clip: border-box;
-   border: 1px solid rgba(223, 215, 202, 0.75);
+   border: 1px solid rgba(205, 202, 223, 0.75);
    border-radius: 0.25rem;
  }
  

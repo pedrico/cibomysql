@@ -10,7 +10,7 @@ SeleccionMesaModule.controller('CtrlSeleccionMesa', ['$scope', '$http','$window'
         console.log($scope.Mesa);
         console.log($scope.Mesa.NumeroMesa);
 
-        $http.get('/UsrLogin').then(function (response) { 
+        $http.get('Login/UsrLogin').then(function (response) { 
             console.log("Obtener usuario");           
             $scope.usuario = response.data.usuario;
             console.log($scope.usuario);

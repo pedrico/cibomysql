@@ -35,33 +35,55 @@
                 <thead>
                     <tr>
                         <th scope="col">Cantidad</th>
+                        <th scope="col">Nombre</th>
                         <th scope="col">Descripción</th>
-                        <th scope="col">Subtotal</th>                        
+                        <th scope="col">Precio/unidad</th>
+                        <th scope="col">Subtotal</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in cocinaList">
                         <!-- <td>{{cocina.cantidad}}</td> -->
-                        <td>1</td>
+                        <td>{{cocina.cantidad}}</td>
                         <td style="font-weight: bolder">{{cocina.nombre}}</td>
+                        <td style="font-weight: bolder">{{cocina.categoria}}</td>
+                        <td>{{cocina.precio}}</td>
                         <td>
                             {{cocina.subtotal | currency: 'Q. '}}
-                        </td>                        
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" ng-click="eliminarItem(cocina.idDetalleOrdenMesa)">Eliminar</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning" ng-click="pagarItem(cocina.idDetalleOrdenMesa)"> &nbsp&nbsp Pagar &nbsp&nbsp </button>
+                        </td>
                     </tr>
                     <!-- Bar -->
                     <tr class="table-secondary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in cocinaListBar">
                         <!-- <td>{{cocina.cantidad}}</td> -->
-                        <td>1</td>
+                        <td>{{cocina.cantidad}}</td>
                         <td style="font-weight: bolder">{{cocina.nombre}}</td>
+                        <td style="font-weight: bolder">{{cocina.categoria}}</td>
+                        <td>{{cocina.precio}}</td>
                         <td>
                             {{cocina.subtotal | currency: 'Q. '}}
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" ng-click="eliminarItem(cocina.idDetalleOrdenMesa)">Eliminar</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning" ng-click="pagarItem(cocina.idDetalleOrdenMesa)"> &nbsp&nbsp Pagar &nbsp&nbsp </button>
                         </td>
                     </tr>
                     <tr>
                         <td></td>
                         <td style="font-weight: bolder">Total</td>
+                        <td></td>
+                        <td></td>
                         <td>
-                            <span class="badge badge-success" style="font-size: 100%; color:black" >{{getTotal() | currency: 'Q. '}}</span>
+                            <span class="badge badge-success" style="font-size: 100%; color:black">{{getTotal() | currency: 'Q. '}}</span>
                         </td>
                     </tr>
 
@@ -69,7 +91,7 @@
             </table>
             <div class="row">
                 <div class="col-sm-4">
-                    
+                    <button class="btn btn-danger" ng-click="cerrar()" style="width: 100%">Cerrar sin pagar</button>
                 </div>
                 <div class="col-sm-4">
                     <button class="btn btn-success" ng-click="agregar()" style="font-size: 50px; width: 100%">+</button>

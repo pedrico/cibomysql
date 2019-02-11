@@ -31,12 +31,12 @@ ReporteTotalDiaModule.controller('CtrlReporteTotalDia', ['$scope', '$http', '$wi
         var total = 0;
         for (var i = 0; i < $scope.cocinaList.length; i++) {
             var product = $scope.cocinaList[i];
-            total += (product.precio);
+            total += (product.subtotal);
         }
 
         for(var i = 0; i < $scope.cocinaListBar.length; i++){
             var product = $scope.cocinaListBar[i];
-            total += (product.precio);
+            total += (product.subtotal);
         }
 
         return total;

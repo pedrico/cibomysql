@@ -25,8 +25,9 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
             $scope.ShowActualizar = false;
             $scope.ShowLimpiar = true;
             //Limpia el contacto recien agregado
-            $scope.cocina = null;
-            vm.file = null;
+            $scope.cocina = {};
+            $scope.categoriaSeleccionada = {};
+            $scope.up.file = null;
             vm.progress = null;
 
             //Paginacion           
@@ -47,6 +48,11 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
                 bodynews: $scope.bodynews.slice(begin, end)
             }
         });
+
+         //ComboBox
+         $http.get('/CatBar/ListaCategoriaddl').then(function (response) {
+            $scope.categorias = response.data;
+        });
     };
 
 
@@ -55,24 +61,32 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
     $scope.addContact = function () {
         console.log("paso 1");
         console.log(vm.upload_form);
-        if (vm.upload_form.file.$valid && vm.file) { //check if from is valid
-            console.log("paso 2");
-            subir(vm.file, function () {
-                console.log("despues de subir imagen")
-                console.log($scope.cocina);
-                $http.post('CatBar/bar', $scope.cocina).then(function (response) {
+        console.log($scope.categoriaSeleccionada);
+        if (angular.isUndefined($scope.categoriaSeleccionada.id)) {
+            $window.alert('Seleccione una categoría');
+        }
+        else {
+            $scope.cocina.idBarCategoria = $scope.categoriaSeleccionada.id;
+            console.log($scope.cocina);
+            if (vm.upload_form.file.$valid && vm.file) { //check if from is valid
+                console.log("paso 2");
+                subir(vm.file, function () {
+                    console.log("despues de subir imagen")
+                    console.log($scope.cocina);
+                    $http.post('CatBar/bar', $scope.cocina).then(function (response) {
+                        console.log(response);
+                        refresh();
+                    });
+                }); //call upload function
+
+            }
+            else {
+                //Si el usuario no selecciona imagen
+                $http.post('CatBar/barNoImagen', $scope.cocina).then(function (response) {
                     console.log(response);
                     refresh();
                 });
-            }); //call upload function
-
-        }
-        else {
-            //Si el usuario no selecciona imagen
-            $http.post('CatBar/barNoImagen', $scope.cocina).then(function (response) {
-                console.log(response);
-                refresh();
-            });
+            }
         }
     };
 
@@ -89,10 +103,22 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
         $http.get('CatBar/bar/' + id).then(function (response) {
             console.log(response);
             $scope.cocina = response.data;
+            console.log($scope.cocinaList);
+            console.log($scope.categoriaSeleccionada);
+            $scope.categoriaSeleccionada = { id: $scope.cocina.idBarCategoria };
+            //$scope.categoriaSeleccionada.id = $scope.cocina.idBarCategoria;
+            console.log($scope.categoriaSeleccionada.id);
             $scope.ShowAgregar = false;
             $scope.ShowActualizar = true;
             $scope.ShowLimpiar = true;
-            vm.file = "http://localhost:4201/" + response.data.imagen;
+            if (response.data.imagen == null) {
+                console.log("imagen null");                
+                $scope.up.file = null;
+            }
+            else {
+                console.log("Con imagen");
+                vm.file = "http://localhost:4201/" + response.data.imagen;
+            }
         });
     };
 
@@ -104,6 +130,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
     };
 
     $scope.update = function () {
+        $scope.cocina.idBarCategoria = $scope.categoriaSeleccionada.id;
         if (vm.upload_form.file.$valid && vm.file) { //check if from is valid  
             console.log("entro if");
             subir(vm.file, function () {

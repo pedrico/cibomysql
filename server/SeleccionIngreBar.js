@@ -22,11 +22,16 @@ router.use(function variablesGlobales(req, res, next) {
 
 
 router.get('/', function (req, res) {
-    //if (req.session.usuario != null) {
-    res.sendFile(path.resolve('../public/SeleccionIngreBar.html'));
-    // } else {
-    //     res.sendfile(__dirname + '/public/Login.html');
-    // }    
+    if (req.session.usuario != null) {
+        //Para el áre de seleccion de platos, debe validarse que la mesa haya sido seleccionada
+        if (req.session.NumeroMesa != null) {
+            res.sendFile(path.resolve('../public/SeleccionIngreBar.html'));
+        } else {
+            res.sendfile(path.resolve('../public/SeleccionMesa.html'));
+        }
+    } else {
+        res.sendfile(path.resolve('../public/Login.html'));
+    }
 });
 
 router.get('/:id', function (req, res) {

@@ -19,15 +19,13 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
     });
 
     var refresh = function () {
-        $http.get('CatCocina/cocina').then(function (response) {
-            console.log("Refresh");
+        $http.get('CatCocinaCategoria/cocina').then(function (response) {
             $scope.cocinaList = response.data;
             $scope.ShowAgregar = true;
             $scope.ShowActualizar = false;
             $scope.ShowLimpiar = true;
             //Limpia el contacto recien agregado
-            $scope.cocina = {};
-            $scope.categoriaSeleccionada = {};
+            $scope.cocina = null;
             $scope.up.file = null;
             vm.progress = null;
 
@@ -49,11 +47,6 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
                 bodynews: $scope.bodynews.slice(begin, end)
             }
         });
-
-        //ComboBox
-        $http.get('/CatCocina/ListaCategoriaddl').then(function (response) {
-            $scope.categorias = response.data;
-        });
     };
 
 
@@ -62,38 +55,30 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
     $scope.addContact = function () {
         console.log("paso 1");
         console.log(vm.upload_form);
-        console.log($scope.categoriaSeleccionada);
-        if (angular.isUndefined($scope.categoriaSeleccionada.id)) {
-            $window.alert('Seleccione una categoría');
-        }
-        else {
-            $scope.cocina.idCocinaCategoria = $scope.categoriaSeleccionada.id;
-            console.log($scope.cocina);
-            if (vm.upload_form.file.$valid && vm.file) { //check if from is valid
-                console.log("paso 2");
-                subir(vm.file, function () {
-                    console.log("despues de subir imagen")
-                    console.log($scope.cocina);
-                    $http.post('CatCocina/cocina', $scope.cocina).then(function (response) {
-                        console.log(response);
-                        refresh();
-                    });
-                }); //call upload function
-
-            }
-            else {
-                //Si el usuario no selecciona imagen
-                $http.post('CatCocina/cocinaNoImagen', $scope.cocina).then(function (response) {
+        if (vm.upload_form.file.$valid && vm.file) { //check if from is valid
+            console.log("paso 2");
+            subir(vm.file, function () {
+                console.log("despues de subir imagen")
+                console.log($scope.cocina);
+                $http.post('CatCocinaCategoria/cocina', $scope.cocina).then(function (response) {
                     console.log(response);
                     refresh();
                 });
-            }
+            }); //call upload function
+
+        }
+        else {
+            //Si el usuario no selecciona imagen
+            $http.post('CatCocinaCategoria/cocinaNoImagen', $scope.cocina).then(function (response) {
+                console.log(response);
+                refresh();
+            });
         }
     };
 
     $scope.remove = function (id) {
         console.log(id);
-        $http.delete('CatCocina/cocina/' + id).then(function (response) {
+        $http.delete('CatCocinaCategoria/cocina/' + id).then(function (response) {
             refresh();
         });
 
@@ -101,19 +86,14 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
 
     $scope.edit = function (id) {
         console.log(id);
-        $http.get('CatCocina/cocina/' + id).then(function (response) {
+        $http.get('CatCocinaCategoria/cocina/' + id).then(function (response) {
             console.log(response);
             $scope.cocina = response.data;
-            console.log($scope.cocinaList);
-            console.log($scope.categoriaSeleccionada);
-            $scope.categoriaSeleccionada = { id: $scope.cocina.idCocinaCategoria };
-            //$scope.categoriaSeleccionada.id = $scope.cocina.idCocinaCategoria;
-            console.log($scope.categoriaSeleccionada.id);
             $scope.ShowAgregar = false;
             $scope.ShowActualizar = true;
             $scope.ShowLimpiar = true;
             if (response.data.imagen == null) {
-                console.log("imagen null");                
+                console.log("imagen null");
                 $scope.up.file = null;
             }
             else {
@@ -125,18 +105,17 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
 
     $scope.redireccionar = function (id) {
         console.log(id + "--hola");
-        $http.get('CatCocina/RedirectIngreCocina').then(function (data, status) {
+        $http.get('CatCocinaCategoria/RedirectIngreCocina').then(function (data, status) {
 
         });
     };
 
     $scope.update = function () {
-        $scope.cocina.idCocinaCategoria = $scope.categoriaSeleccionada.id;
         if (vm.upload_form.file.$valid && vm.file) { //check if from is valid  
             console.log("entro if");
             subir(vm.file, function () {
                 console.log($scope.cocina._id);
-                $http.put('CatCocina/cocina/' + $scope.cocina._id, $scope.cocina).then(function (response) {
+                $http.put('CatCocinaCategoria/cocina/' + $scope.cocina._id, $scope.cocina).then(function (response) {
                     $scope.ShowAgregar = true;
                     refresh();
                 });
@@ -144,7 +123,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
         } else {
             console.log("entro a else");
             console.log(vm.file);
-            $http.put('CatCocina/cocinaNoImagen/' + $scope.cocina._id, $scope.cocina).then(function (response) {
+            $http.put('CatCocinaCategoria/cocinaNoImagen/' + $scope.cocina._id, $scope.cocina).then(function (response) {
                 $scope.ShowAgregar = true;
                 refresh();
             });

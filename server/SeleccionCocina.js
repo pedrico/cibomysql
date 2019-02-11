@@ -22,21 +22,46 @@ router.use(function variablesGlobales(req, res, next) {
 
 
 router.get('/', function (req, res) {
-    //if (req.session.usuario != null) {
-    var IngredientesExcluidos = [];
-    req.session.IngredientesExcluidos = IngredientesExcluidos;
-    res.sendFile(path.resolve('../public/SeleccionCocina.html'));
-    // } else {
-    //     res.sendfile(__dirname + '/public/Login.html');
-    // }    
+    if (req.session.usuario != null) {
+        //Para el áre de seleccion de platos, debe validarse que la mesa haya sido seleccionada
+        if (req.session.NumeroMesa != null) {
+            var IngredientesExcluidos = [];
+            req.session.IngredientesExcluidos = IngredientesExcluidos;
+            res.sendFile(path.resolve('../public/SeleccionCocina.html'));
+        } else {
+            res.sendfile(path.resolve('../public/SeleccionMesa.html'));
+        }
+    } else {
+        res.sendfile(path.resolve('../public/Login.html'));
+    }
 });
 
+router.post('/cocina', function (req, res) {
+    var idCategoria = req.body.idCategoria;
+    console.log("Categoria:");
+    console.log(req.body);
+    if (idCategoria != null) {
+        var sql = `select ccp.id, ccp.nombre, ccp.descripcion, ccp.precio, ccp.imagen, ccc.nombre as categoria from CatCocinaPlato ccp
+    left join CatCocinaCategoria ccc on ccp.idCocinaCategoria = ccc.id
+    where ccc.id = ${idCategoria};`;
+        con.query(sql, function (err, result, fields) {
+            if (err) throw err;
+            console.log(JSON.stringify(result));
+            res.json(result);
+        });
+    }
+    else {
+        res.json([]);
+    }
+
+});
 
 router.post('/', function (req, res) {
     var NumeroMesa = req.session.NumeroMesa
     var NumeroSesion = -1;
     var OrdenMesaResult = null;
     var idPlato = req.body.iditemcocina;
+    var cantidad = req.body.cantidad;
     req.session.OrdenMesa = "123";
     req.session.otro = "123";
     console.log("Numero mesa: " + NumeroMesa);
@@ -69,20 +94,22 @@ router.post('/', function (req, res) {
                     if (err) throw err;
                     console.log(JSON.stringify(result));
                     console.log("Id del plato: " + idPlato);
-                    sql = `select id, nombre, descripcion, imagen 
+                    sql = `select id, nombre, descripcion, precio, imagen 
                     from CatCocinaPlato c
                     where id = ${idPlato}`;
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
-                        sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
+                        sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, cantidad, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                         values = [
-                            [NumeroMesa, 1, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                            [NumeroMesa, 1, idPlato, 1, result[0].precio, cantidad, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                         ];
-                        con.query(sql, [values], function (err, result) {
+                        con.query(sql, [values], function (err, resultDetalle) {
                             if (err) throw err;
-                            console.log(JSON.stringify(result));
-                            res.json(result);
+                            resultDetalle.nombre = result[0].nombre;
+                            resultDetalle.cantidad = cantidad;
+                            console.log(JSON.stringify(resultDetalle));
+                            res.json(resultDetalle);
                         });
                     });
                 });
@@ -104,20 +131,22 @@ router.post('/', function (req, res) {
                 var sesionCerrada = result[0].cerrada;
                 if (sesionCerrada == 0) {
                     //La cuenta de la mesa sigue abierta, se asigna el plato a la cuenta actual.
-                    sql = `select id, nombre, descripcion, imagen 
+                    sql = `select id, nombre, descripcion, precio, imagen 
                     from CatCocinaPlato c
                     where id = ${idPlato}`;
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
-                        sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
+                        sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, cantidad, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                         values = [
-                            [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                            [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, cantidad, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                         ];
-                        con.query(sql, [values], function (err, result) {
+                        con.query(sql, [values], function (err, resultDetalle) {
                             if (err) throw err;
-                            console.log(JSON.stringify(result));
-                            res.json(result);
+                            resultDetalle.nombre = result[0].nombre;
+                            resultDetalle.cantidad = cantidad;
+                            console.log(JSON.stringify(resultDetalle));
+                            res.json(resultDetalle);
                         });
                     });
                 } else {
@@ -128,20 +157,22 @@ router.post('/', function (req, res) {
                         [NumeroSesion, NumeroMesa, 0]
                     ];
                     con.query(sql, [values], function (err, result) {
-                        sql = `select id, nombre, descripcion, imagen 
+                        sql = `select id, nombre, descripcion, precio, imagen 
                         from CatCocinaPlato c
                         where id = ${idPlato}`;
                         con.query(sql, function (err, result, fields) {
                             if (err) throw err;
                             console.log(JSON.stringify(result));
-                            sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
+                            sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, cantidad, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                             values = [
-                                [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                                [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, cantidad, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                             ];
-                            con.query(sql, [values], function (err, result) {
+                            con.query(sql, [values], function (err, resultDetalle) {
                                 if (err) throw err;
-                                console.log(JSON.stringify(result));
-                                res.json(result);
+                                resultDetalle.nombre = result[0].nombre;
+                                resultDetalle.cantidad = cantidad;
+                                console.log(JSON.stringify(resultDetalle));
+                                res.json(resultDetalle);
                             });
                         });
                     });
@@ -150,7 +181,7 @@ router.post('/', function (req, res) {
         }
     });
 
-    
+
 });
 
 router.post('/RedireccionarMesa', function (req, res) {

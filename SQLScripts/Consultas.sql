@@ -8,6 +8,7 @@ select * from categoria;
 -- DROP TABLE CatBebidaIngre;
 -- DROP TABLE Sesion;
 -- DROP TABLE DetalleOrdenMesa;
+DROP TABLE Login;
 
 
 
@@ -16,12 +17,14 @@ insert into CatCocinaPlato (nombre, descripcion, precio) values ("Con queso", "H
 insert into CatCocinaIngre (nombre, descripcion) values ("Queso", "Duro");
 insert into CocinaPlatoIngre (idPlato, idIngre) values (12, 1);
 
+select * from CatCocinaCategoria;
 select * from CatCocinaPlato;
 select * from CatCocinaIngre;
 select * from CocinaPlatoIngre;
 select * from Sesion;
 select * from DetalleOrdenMesa where idItem = 1 and categoria = 1;
 select * from IngreRemovido;
+select * from DetalleOrdenMesa;
 
 select id, nombre, descripcion, imagen 
 from CocinaPlatoIngre cpl
@@ -147,3 +150,69 @@ select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, GROUP_
         limit 10;
 
 
+select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, CONVERT_TZ(dom.fechaUpdate,'+00:00','+00:00') as fechaTZ, ccp.id, ccp.nombre, ccp.descripcion , ccp.precio as subtotal from 
+    Mesa m
+    join Sesion s on m.id = s.IdMesa
+    join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+    join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1 
+    where dom.Enviada = 4
+    and dom.fechaUpdate >= '2019-01-03 01:30:00'
+    and dom.fechaUpdate <= '2019-01-03 23:30:00'
+    order by dom.fechaUpdate;
+
+
+
+
+select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , ccp.precio as subtotal from 
+    Mesa m
+    join Sesion s on m.id = s.IdMesa
+    join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+    join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1 
+    where dom.Enviada = 4
+    and dom.fechaUpdate >= 'Wed Jan 02 2019 01:50:00 GMT-0600 (CST)'
+    and dom.fechaUpdate <= 'algo'
+    order by dom.fechaUpdate;
+    
+    
+select * from Mesa m
+join Sesion s on m.id = s.idmesa
+where s.cerrada = 0;
+
+
+select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion , ccp.precio as subtotal,cbb.id, cbb.nombre, cbb.descripcion , cbb.precio as subtotal 
+from 
+        Mesa m
+        join Sesion s on m.id = s.IdMesa
+        join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+        left join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1        
+        left join CatBarBebida cbb on dom.IdItem = cbb.Id and dom.Categoria = 2 
+        where m.id = 14
+        and s.num = 2
+        and s.Cerrada = 0
+        and dom.Enviada = 2
+        group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion;
+        
+select m.id as idDetalleOrdenMesa, sum(dom.precio) as subtotal
+from 
+Mesa m
+join Sesion s on m.id = s.IdMesa
+join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+left join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1        
+left join CatBarBebida cbb on dom.IdItem = cbb.Id and dom.Categoria = 2 
+where 
+s.Cerrada = 0
+and dom.Enviada = 2
+group by m.id;    
+
+
+
+
+select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , ccp.precio from
+    Mesa m
+    join Sesion s on m.id = s.IdMesa
+    join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+    join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1
+    where dom.Enviada = 4
+    and dom.fechaUpdate >= '2019-1-24 23:49:00'
+    and dom.fechaUpdate <= '2019-1-26 23:49:00'
+    order by dom.fechaUpdate;    

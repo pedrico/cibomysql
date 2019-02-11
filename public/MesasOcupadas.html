@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/css/bootstrap-Sandstone.css">    
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/angular.min.js"></script>
+
+    
+    
+    <script src="/js/ui-bootstrap-tpls-1.0.3.js"></script>
+    <title>
+        Mesas Ocupadas
+    </title>
+</head>
+
+<body ng-app="myApp">
+    <div style="background-image: url('/Imagenes/wood2.jpg') ">
+        <div ng-include="'header.html'"></div>
+
+        <form class="container" ng-controller="AppCtrl as up" name="up.upload_form">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <h1>Mesas Ocupadas</h1>
+                    <!-- <input ng-model="test"> {{test}} -->
+                </div>
+                <div class="col-md-5"></div>
+                <div class="col-md-1">
+                    <label style="color:white">Buscar:</label>
+                </div>
+                <div class="col-md-2">
+                    <input class="form-control" type="text" ng-model="searchBox">
+                </div>
+            </div>
+
+            <table class="table table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Numero</th>
+                        <th scope="col">Saldo</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>                    
+                    <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in filterData = (cocinaList | filter: searchBox) | limitTo:10:10*(page-1)">
+                        <td style="font-weight: bolder">{{cocina.id}}</td>                        
+                        <td>{{cocina.total | currency: 'Q. '}}</td>                        
+                        <td>
+                            <button class="btn btn-success" ng-click="cuenta(cocina.id)">$ Cuenta</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" ng-click="cerrar(cocina.id)">Cerrar sin pagar</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning" ng-click="pagar(cocina.id)">Pagar</button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <!-- <div>
+                <div style="color:white"> {{noOfPages}} &nbsp; {{currentPage}} &nbsp; {{maxSize}}
+                <pagination ng-model="currentPage" total-items="bodynews.length" items-per-page="5"></pagination>
+            </div> -->
+            <!-- <div class="alert alert-info" ng-repeat="tic in paged.bodynews">
+                    {{tic}}
+                </div> -->
+
+                <uib-pagination class="pagination-sm pagination" total-items="filterData.length" ng-model="page"
+                ng-change="pageChanged()" previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page=10></uib-pagination>
+
+        </form>
+        <div ng-include="'footer.html'"></div>
+    </div>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
+    <script src="controllers/MesasOcupadasController.js"></script>
+    <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
+    <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
+
+</body>
+
+</html>

@@ -6,22 +6,26 @@ var path;
 var nombreArchivo;
 var session;
 
-router.use(function variablesGlobales(req,res,next){
-    console.log("obteniendo conexion");
-    con  = req.app.get('con');
-    path  = req.app.get('path');
-    nombreArchivo = req.app.get('nombreArchivo');;
-    session = req.app.get('session');
-    console.log("conexion obtenida");
-    next();
+router.use(function variablesGlobales(req, res, next) {
+  console.log("obteniendo conexion");
+  con = req.app.get('con');
+  path = req.app.get('path');
+  nombreArchivo = req.app.get('nombreArchivo');;
+  session = req.app.get('session');
+  console.log("conexion obtenida");
+  next();
 });
 
 router.get('/', function (req, res) {
-  //if (req.session.usuario != null) {
+  console.log('Server seleccion mesa ');
+  console.log(req.session.usuario);
+  if (req.session.usuario != null) {
+    console.log('If');
     res.sendFile(path.resolve('../public/SeleccionMesa.html'));
-    // } else {
-    //     res.sendfile(__dirname + '/public/Login.html');
-    // }      
+  } else {
+    console.log('Else');
+    res.sendfile(path.resolve('../public/Login.html'));
+  }
 });
 
 router.post('/', function (req, res) {

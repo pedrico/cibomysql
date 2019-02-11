@@ -16,14 +16,14 @@ router.use(function variablesGlobales(req, res, next) {
 
 router.get('/', function (req, res) {
     if (req.session.usuario != null) {
-        res.sendFile(path.resolve('../public/CatCocinaIngre.html'));
+    res.sendFile(path.resolve('../public/CatBarCategoria.html'));
     } else {
         res.sendfile(path.resolve('../public/Login.html'));
-    }
+    }    
 });
 
-router.get('/ingrediente', function (req, res) {
-    var sql = "select * from CatCocinaIngre;";
+router.get('/cocina', function (req, res) {
+    var sql = "select * from CatBarCategoria;";
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
@@ -31,18 +31,14 @@ router.get('/ingrediente', function (req, res) {
     });
 });
 
-router.post('/ingrediente', function (req, res) {
 
-    req.body.imagen = nombreArchivo;
+router.post('/cocina', function (req, res) {
     console.log(req.body);
+    req.body.imagen = nombreArchivo;
 
-    if (req.body.descripcion == null) {
-        req.body.descripcion = "";
-    }
-
-    var sql = "INSERT INTO CatCocinaIngre (nombre, descripcion, imagen) VALUES ?";
+    var sql = "INSERT INTO CatBarCategoria (nombre, imagen) VALUES ?";
     var values = [
-        [req.body.nombre, req.body.descripcion, req.body.imagen]
+        [req.body.nombre, req.body.imagen]
     ];
     con.query(sql, [values], function (err, result) {
         if (err) throw err;
@@ -51,22 +47,23 @@ router.post('/ingrediente', function (req, res) {
     });
 });
 
-router.post('/ingredienteNoImagen', function (req, res) {
-    var sql = "INSERT INTO CatCocinaIngre (nombre, descripcion) VALUES ?";
+router.post('/cocinaNoImagen', function (req, res) {
+    var sql = "INSERT INTO CatBarCategoria (nombre) VALUES ?";
     var values = [
-        [req.body.nombre, req.body.descripcion]
+        [req.body.nombre]
     ];
     con.query(sql, [values], function (err, result) {
         if (err) throw err;
         console.log(JSON.stringify(result));
+        console.log(result.insertId);
         res.json(result);
     });
 });
 
-router.delete('/ingrediente/:id', function (req, res) {
+router.delete('/cocina/:id', function (req, res) {
     var id = req.params.id;
-
-    var sql = "DELETE FROM CatCocinaIngre WHERE id = " + id;
+    //console.log('Eliminar: ' + id);
+    var sql = "DELETE FROM CatBarCategoria WHERE id = " + id;
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Number of records deleted: " + result.affectedRows);
@@ -74,10 +71,10 @@ router.delete('/ingrediente/:id', function (req, res) {
     });
 });
 
-router.get('/ingrediente/:id', function (req, res) {
+router.get('/cocina/:id', function (req, res) {
     var id = req.params.id;
     //console.log(id);
-    var sql = `select * from CatCocinaIngre where id = ${id}`;
+    var sql = `select * from CatBarCategoria where id = ${id}`;
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
@@ -85,13 +82,12 @@ router.get('/ingrediente/:id', function (req, res) {
     });
 });
 
-router.put('/ingrediente/:id', function (req, res) {
+router.put('/cocina/:id', function (req, res) {
 
     req.body.imagen = nombreArchivo;
     var id = req.params.id;
     //console.log(req.body.nombre);
-    var sql = `UPDATE CatCocinaIngre SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', 
-    imagen = '${req.body.imagen}'   WHERE id = ${req.body.id}`;
+    var sql = `UPDATE CatBarCategoria SET nombre = '${req.body.nombre}', imagen = '${req.body.imagen}' WHERE id = ${req.body.id}`;
 
     con.query(sql, function (err, result) {
         if (err) throw err;
@@ -100,10 +96,11 @@ router.put('/ingrediente/:id', function (req, res) {
     });
 });
 
-router.put('/ingredienteNoImagen/:id', function (req, res) {
+router.put('/cocinaNoImagen/:id', function (req, res) {
 
     var id = req.params.id;
-    var sql = `UPDATE CatCocinaIngre SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}'  WHERE id = ${req.body.id}`;
+    var sql = `UPDATE CatBarCategoria SET nombre = '${req.body.nombre}' WHERE id = ${req.body.id}`;
+    console.log(sql);
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Number of records updated: " + result.affectedRows);

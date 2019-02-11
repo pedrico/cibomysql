@@ -20,7 +20,10 @@ var nombreArchivo = '';
 app.use(express.static(path.resolve('../public')));
 app.use(express.static(path.resolve('../uploads')));
 app.use(bodyParser.json());
-app.use(session({ secret: 'abcd1234', cookie: { secure: false, resave: true } }));
+//Documentación de express-session
+//https://github.com/expressjs/session#options
+//Duracion de la sesion seteada en 1hora = 360000
+app.use(session({ secret: 'abcd1234', resave: false, saveUninitialized: false, cookie: { secure: false, maxAge: 360000 } }));
 //Configuro localmente los estilos Bootstrap, JQyery https://stackoverflow.com/questions/22792254/how-do-i-load-bootstrap-using-npm
 app.use('/js', express.static(path.resolve('../js')));
 app.use('/css', express.static(path.resolve('../css')));
@@ -28,9 +31,11 @@ app.use('/fonts', express.static(path.resolve('../fonts')));
 app.use('/node_modules', express.static(path.resolve('../node_modules')));
 
 //Modulos propios
+var CatCocinaCategoria = require('./CatCocinaCategoria');
 var CatCocina = require('./CatCocina');
 var CatCocinaIngre = require('./CatCocinaIngre');
 var CocinaPlatoIngre = require('./CocinaPlatoIngre');
+var CatBarCategoria = require('./CatBarCategoria');
 var CatBar = require('./CatBar');
 var CatBarIngre = require('./CatBarIngre');
 var BarBebidaIngre = require('./BarBebidaIngre');
@@ -43,10 +48,16 @@ var SeleccionIngreCocina = require('./SeleccionIngreCocina');
 var SeleccionIngreBar = require('./SeleccionIngreBar');
 var Cuenta = require('./Cuenta');
 var ReporteTotalDia = require('./ReporteTotalDia');
+var MesasOcupadas = require('./MesasOcupadas');
+var CategoriaCocinaBar = require('./CategoriaCocinaBar');
+var CatUsuario = require('./CatUsuario');
+var Login = require('./Login');
 
+app.use('/CatCocinaCategoria', CatCocinaCategoria);
 app.use('/CatCocina', CatCocina);
 app.use('/CatCocinaIngre', CatCocinaIngre);
 app.use('/CocinaPlatoIngre', CocinaPlatoIngre);
+app.use('/CatBarCategoria', CatBarCategoria);
 app.use('/CatBar', CatBar);
 app.use('/CatBarIngre', CatBarIngre);
 app.use('/BarBebidaIngre', BarBebidaIngre);
@@ -59,6 +70,10 @@ app.use('/SeleccionIngreCocina', SeleccionIngreCocina);
 app.use('/SeleccionIngreBar', SeleccionIngreBar);
 app.use('/Cuenta', Cuenta);
 app.use('/ReporteTotalDia', ReporteTotalDia);
+app.use('/MesasOcupadas', MesasOcupadas);
+app.use('/CategoriaCocinaBar', CategoriaCocinaBar);
+app.use('/CatUsuario', CatUsuario);
+app.use('/Login', Login);
 
 
 con.connect(function (err) {

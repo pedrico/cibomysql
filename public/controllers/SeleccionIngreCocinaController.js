@@ -17,13 +17,14 @@ IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$
             //$scope.cocina = null;
             vm.file = null;
             vm.progress = null;
+            console.log(idplato);
             $http.get('/CatCocina/cocina/' + idplato).then(function (response) {
                 console.log("Titulo plato");
                 console.log(response);
                 $scope.cocina = response.data;
             });
         });
-        
+
         //ComboBox
         // $http.get('/ListIngredientes').then(function (response) {
         //     $scope.names = response.data;

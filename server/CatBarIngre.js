@@ -5,21 +5,21 @@ var con;
 var path;
 var nombreArchivo;
 
-router.use(function variablesGlobales(req,res,next){
+router.use(function variablesGlobales(req, res, next) {
     console.log("obteniendo conexion");
-    con  = req.app.get('con');
-    path  = req.app.get('path');
+    con = req.app.get('con');
+    path = req.app.get('path');
     nombreArchivo = req.app.get('nombreArchivo');;
     console.log("conexion obtenida");
     next();
 });
 
 router.get('/', function (req, res) {
-    //if (req.session.usuario != null) {
-    res.sendFile(path.resolve('../public/CatBarIngre.html'));
-    // } else {
-    //     res.sendfile(__dirname + '/public/Login.html');
-    // }    
+    if (req.session.usuario != null) {
+        res.sendFile(path.resolve('../public/CatBarIngre.html'));
+    } else {
+        res.sendfile(path.resolve('../public/Login.html'));
+    }
 });
 
 router.get('/ingrediente', function (req, res) {
@@ -32,14 +32,14 @@ router.get('/ingrediente', function (req, res) {
 });
 
 router.post('/ingrediente', function (req, res) {
-    
+
     req.body.imagen = nombreArchivo;
     console.log(req.body);
 
-    if  (req.body.descripcion == null){
+    if (req.body.descripcion == null) {
         req.body.descripcion = "";
     }
-    
+
     var sql = "INSERT INTO CatBarIngre (nombre, descripcion, imagen) VALUES ?";
     var values = [
         [req.body.nombre, req.body.descripcion, req.body.imagen]
@@ -91,7 +91,7 @@ router.put('/ingrediente/:id', function (req, res) {
     var id = req.params.id;
     //console.log(req.body.nombre);
     var sql = `UPDATE CatBarIngre SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}', 
-    imagen = '${req.body.imagen}'   WHERE id = ${req.body.id}` ;
+    imagen = '${req.body.imagen}'   WHERE id = ${req.body.id}`;
 
     con.query(sql, function (err, result) {
         if (err) throw err;
@@ -102,8 +102,8 @@ router.put('/ingrediente/:id', function (req, res) {
 
 router.put('/ingredienteNoImagen/:id', function (req, res) {
 
-    var id = req.params.id;    
-    var sql = `UPDATE CatBarIngre SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}'  WHERE id = ${req.body.id}` ;
+    var id = req.params.id;
+    var sql = `UPDATE CatBarIngre SET nombre = '${req.body.nombre}', descripcion = '${req.body.descripcion}'  WHERE id = ${req.body.id}`;
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Number of records updated: " + result.affectedRows);

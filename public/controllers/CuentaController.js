@@ -57,6 +57,12 @@ ResumenOrdenModule.controller('CtrlResumenOrden', ['$scope', '$http', '$window',
         });
     };
 
+    $scope.cerrar = function () {        
+        $http.put('/Cuenta/Cerrar').then(function (res) {
+            $window.location.href = res.data.redireccionar;
+        });
+    };
+
     $scope.agregar = function () {       
         $http.post('/ResumenOrden/ResumenOrdenDetalleAgregar', $scope.Mesa).then(function(res){
             $window.location.href= res.data.redireccionar;
@@ -69,10 +75,18 @@ ResumenOrdenModule.controller('CtrlResumenOrden', ['$scope', '$http', '$window',
         });
     };
 
-    $scope.eliminar = function (id) {               
-        $http.put('/ResumenOrdenDetalleEliminar/'+ id).then(function(response){
+    $scope.eliminarItem = function (id) {
+        $scope.Item = { idDetalleOrdenMesa: id };
+        $http.put('/Cuenta/EliminarItem', $scope.Item).then(function (res) {
             refresh();
-        }) ;
+        });
+    };
+
+    $scope.pagarItem = function (id) {
+        $scope.Item = { idDetalleOrdenMesa: id };
+        $http.put('/Cuenta/PagarItem', $scope.Item).then(function (res) {
+            refresh();
+        });
     };
 
     $scope.clear = function () {

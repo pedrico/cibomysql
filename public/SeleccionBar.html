@@ -5,14 +5,14 @@
     <meta charset="utf-8">
     <!-- <meta name="mobile-web-app-capable" content="yes"> -->
     <link rel="stylesheet" href="/css/bootstrap-Sandstone.css">
-    <link rel="stylesheet" href="/css/bootstrap3.3.6.css">
+    <!-- <link rel="stylesheet" href="/css/bootstrap3.3.6.css"> -->
     <script src="/js/jquery-3.3.1.min.js"></script>
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.js"></script>
     <script src="/js/angular.min.js"></script>
 
     <title>
-        Agregar a la Orden
+        Agregar Bebidas a la Orden
     </title>
 </head>
 
@@ -37,7 +37,7 @@
             <br>
             <div class="row">
                 <div class="col-md-4">
-                    <h1>Agregar a la Orden</h1>
+                    <h1>Agregar Bebidas a la Orden</h1>
                     <!-- <input ng-model="test"> {{test}} -->
                 </div>
                 <div class="col-md-5"></div>
@@ -52,7 +52,6 @@
 
             <div class="alert alert-success alert-dismissible" ng-show="alerta.visible">
                 <!-- <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> -->
-                1
                 <strong>{{alerta.mensaje}}</strong> agregado(a).
             </div>
 
@@ -70,8 +69,9 @@
                     <tr>
                         <th scope="col">Nombre</th>
                         <th scope="col">Descripción</th>
+                        <th scope="col">Cantidad</th>
                         <th scope="col">Precio</th>
-                        <th scope="col">Imagen</th>
+                        <!-- <th scope="col">Imagen</th> -->
                         <th>&nbsp;</th>
                         <th>&nbsp;</th>
                     </tr>
@@ -79,13 +79,45 @@
                 <tbody>
                     <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="bar in barList | filter: searchBox">
                         <td style="font-weight: bolder">{{bar.nombre}}</td>
-                        <td>{{bar.descripcion}}</td>
-                        <td>{{bar.precio}}</td>
+                        <td>{{bar.categoria}}</td>
                         <td>
-                            <img class="logo" src="http://localhost:4201/{{bar.imagen}}" style="width:100px;" alt="Imagen">
+                            <div class="input-group number-spinner">
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-danger" data-dir="up" ng-click="decrementar10(bar)">
+                                        -10
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                                <label>&nbsp&nbsp&nbsp</label>
+                                <span class="input-group-btn data-dwn">
+                                    <button class="btn btn-default btn-info" data-dir="dwn" ng-click="(bar.cantidad == null) ? bar.cantidad = 1 : (bar.cantidad > 1 ? bar.cantidad = bar.cantidad - 1 : bar.cantidad = 1);"
+                                        ng-mousedown='mouseDown(bar, "down")' ng-mouseup="mouseUp()">
+                                        -
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </span>
+                                <input type="text" class="form-control text-center" ng-model="bar.cantidad" min="-10" max="40">
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-info" data-dir="up" ng-click="incrementar(bar)" ng-mousedown='mouseDown(bar, "up")' ng-mouseup="mouseUp()">
+                                        +
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                                <label>&nbsp&nbsp&nbsp</label>
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-warning" data-dir="up" ng-click="incrementar10(bar)">
+                                        +10
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                            </div>
                         </td>
+                        <td>{{bar.precio}}</td>
+                        <!-- <td>
+                            <img class="logo" src="http://localhost:4201/{{bar.imagen}}" style="width:100px;" alt="Imagen">
+                        </td> -->
                         <td>
-                            <button class="btn btn-success" ng-click="addItem(bar.id)"> + </button>
+                            <button class="btn btn-success" ng-click="addItem(bar.id, bar.cantidad)"> Agregar </button>
                         </td>
                         <td>
                             <a href="http://localhost:4201/SeleccionIngreBar?plato={{bar.id}}" class="btn btn-warning">Ingre</a>

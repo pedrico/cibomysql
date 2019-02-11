@@ -1,10 +1,21 @@
 var myApp = angular.module('myApp', ['ngFileUpload']);
 
-myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($scope, $http, Upload, $window) {
+myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', '$interval', function ($scope, $http, Upload, $window, $interval) {
 
     var refresh = function () {
-        $http.get('/CatCocina/cocina').then(function (response) {
+        var idCategoria = getUrlParameter('cat');
+        var categoria = { idCategoria: idCategoria };
+        console.log('Categoría: ' + idCategoria);
+
+        $http.post('/SeleccionCocina/cocina', categoria).then(function (response) {
             //console.log("Recibí la info que requerí.");
+
+            //Funcion map propia de los array, utilizada para asiganar la propiedad cantidad = 1 de todos los items del array.
+            response.data.map(function (x) {
+                x.cantidad = 1;
+                return x
+            });
+
             $scope.cocinaList = response.data;
             $scope.alert = { message: 'hola', closable: true };
             console.log($scope.alert);
@@ -16,18 +27,19 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
         });
     };
     refresh();
-    
 
-    var OcultarAlerta = function(){
-        $scope.alerta = { mensaje: '', visible: false };            
+
+    var OcultarAlerta = function () {
+        $scope.alerta = { mensaje: '', visible: false };
     };
     OcultarAlerta();
 
-    $scope.addItem = function (id) {
-        var DetalleOrdenMesa = { iditemcocina: id }
+    $scope.addItem = function (id, cantidad) {
+        var DetalleOrdenMesa = { iditemcocina: id, cantidad: cantidad }
         console.log("Agregar Item");
-        $http.post('/SeleccionCocina', DetalleOrdenMesa).then(function (response) {            
-            $scope.alerta = { mensaje: response.data.nombre, visible: true };            
+        $http.post('/SeleccionCocina', DetalleOrdenMesa).then(function (response) {
+            console.log(response.data);
+            $scope.alerta = { mensaje: response.data.cantidad + " " + response.data.nombre, visible: true };
             refresh();
         });
     };
@@ -59,30 +71,30 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
         });
     };
 
-    $scope.cambiarMesa = function () {        
+    $scope.cambiarMesa = function () {
         $http.post('/SeleccionCocina/RedireccionarMesa').then(function (response) {
-            $window.location.href= response.data.redireccionar;
+            $window.location.href = response.data.redireccionar;
         });
     };
 
-    $scope.orden = function () {        
+    $scope.orden = function () {
         $http.post('/SeleccionCocina/RedireccionarOrden').then(function (response) {
-            $window.location.href= response.data.redireccionar;
+            $window.location.href = response.data.redireccionar;
         });
     };
 
-    $scope.cuentaOrden = function () {        
+    $scope.cuentaOrden = function () {
         $http.post('/SeleccionCocina/RedireccionarCuentaOrden').then(function (response) {
-            $window.location.href= response.data.redireccionar;
+            $window.location.href = response.data.redireccionar;
         });
     };
 
-    $scope.bebidas = function () {        
+    $scope.bebidas = function () {
         $http.post('/SeleccionCocina/RedireccionarBebidas').then(function (response) {
-            $window.location.href= response.data.redireccionar;
+            $window.location.href = response.data.redireccionar;
         });
     };
-    
+
     $scope.update = function () {
         if (vm.upload_form.file.$valid && vm.file) { //check if from is valid  
             console.log("entro if");
@@ -128,5 +140,84 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
 
         callback();
     };
+
+
+    //Ini Logica para spinner de cantidad
+    var promesa;
+
+    $scope.incrementar = function (cocina) {
+        if (cocina.cantidad == null) {
+            cocina.cantidad = 1;
+        }
+        console.log("Cantidad: " + cocina.cantidad);
+        cocina.cantidad = cocina.cantidad + 1;
+        console.log("Cantidad actualizada: " + cocina.cantidad);
+        console.log($scope);
+        console.log($scope.cocina);
+
+    };
+
+    $scope.incrementar10 = function (cocina) {
+        if (cocina.cantidad == null) {
+            cocina.cantidad = 1;
+        }
+        cocina.cantidad = cocina.cantidad + 10;
+    };
+
+    $scope.decrementar10 = function (cocina) {
+        if (cocina.cantidad == null) {
+            cocina.cantidad = 1;
+        }
+        if (cocina.cantidad < 11) {
+            cocina.cantidad = 1;
+        }
+        else {
+            cocina.cantidad = cocina.cantidad - 10;
+        }
+    };
+
+    $scope.mouseDown = function (cocina, direccion) {
+        promesa = $interval(function () {
+            if (cocina.cantidad == null) {
+                cocina.cantidad = 1;
+            }
+            console.log("Cantidad: " + cocina.cantidad);
+            if (direccion == "up") {
+                cocina.cantidad = cocina.cantidad + 1;
+            }
+            else {
+                if (cocina.cantidad > 1) {
+                    cocina.cantidad = cocina.cantidad - 1;
+                }
+            }
+
+            console.log("Cantidad actualizada: " + cocina.cantidad);
+            console.log($scope);
+            console.log($scope.cocina);
+
+        }, 300);
+    };
+
+    $scope.mouseUp = function (cocina) {
+        $interval.cancel(promesa);
+    };
+    //Fin Logica para spinner de cantidad
+
+    function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        console.log("Obteniendo parametros-----------------");
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
 }]);
+
 
