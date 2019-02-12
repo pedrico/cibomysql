@@ -127,9 +127,9 @@ router.post('/', function (req, res) {
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
-                        sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
+                        sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Cantidad, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                         values = [
-                            [NumeroMesa, 1, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                            [NumeroMesa, 1, idPlato, 1, result[0].precio, 1, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                         ];
                         con.query(sql, [values], function (err, result) {
                             if (err) throw err;
@@ -149,7 +149,7 @@ router.post('/', function (req, res) {
                                     console.log(JSON.stringify(result));
                                 });
                             }
-                            res.send({ redireccionar: "/SeleccionCocina" });
+                            res.send({ redireccionar: "/CategoriaCocinaBar?seccion=1" });
                         });
                     });
                 });
@@ -177,9 +177,9 @@ router.post('/', function (req, res) {
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
-                        sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
+                        sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Cantidad, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                         values = [
-                            [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                            [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, 1, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                         ];
                         con.query(sql, [values], function (err, result) {
                             if (err) throw err;
@@ -199,7 +199,7 @@ router.post('/', function (req, res) {
                                     console.log(JSON.stringify(result));
                                 });
                             }
-                            res.send({ redireccionar: "/SeleccionCocina" });
+                            res.send({ redireccionar: "/CategoriaCocinaBar?seccion=1" });
                         });
                     });
                 } else {
@@ -216,9 +216,9 @@ router.post('/', function (req, res) {
                         con.query(sql, function (err, result, fields) {
                             if (err) throw err;
                             console.log(JSON.stringify(result));
-                            sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Enviada, fechaInsert, fechaUpdate) VALUES ?";
+                            sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, Cantidad, Enviada, fechaInsert, fechaUpdate) VALUES ?";
                             values = [
-                                [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+                                [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, 1, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
                             ];
                             con.query(sql, [values], function (err, result) {
                                 if (err) throw err;
@@ -240,16 +240,7 @@ router.post('/', function (req, res) {
                                     });
 
                                 }
-                                res.send({ redireccionar: "/SeleccionCocina" });
-
-
-
-
-
-
-
-
-
+                                res.send({ redireccionar: "/CategoriaCocinaBar?seccion=1" });
                             });
                         });
                     });

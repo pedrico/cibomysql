@@ -35,10 +35,14 @@
                 <thead>
                     <tr>
                         <th scope="col">Cantidad</th>
+                        <th scope="col">Pagado</th>
+                        <th scope="col">Eliminado</th>
+                        <th scope="col">Pendiente</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Descripción</th>
-                        <th scope="col">Precio/unidad</th>
+                        <th scope="col">Precio / unidad</th>
                         <th scope="col">Subtotal</th>
+                        <th scope="col"></th>
                         <th scope="col"></th>
                         <th scope="col"></th>
                     </tr>
@@ -47,6 +51,15 @@
                     <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in cocinaList">
                         <!-- <td>{{cocina.cantidad}}</td> -->
                         <td>{{cocina.cantidad}}</td>
+                        <td>
+                            <b>{{cocina.cantidadPagada}}</b>
+                        </td>
+                        <td>
+                            <b>{{cocina.cantidadEliminada}}</b>
+                        </td>
+                        <td>
+                            <b>{{cocina.cantidad - cocina.cantidadPagada - cocina.cantidadEliminada}}</b>
+                        </td>
                         <td style="font-weight: bolder">{{cocina.nombre}}</td>
                         <td style="font-weight: bolder">{{cocina.categoria}}</td>
                         <td>{{cocina.precio}}</td>
@@ -54,16 +67,58 @@
                             {{cocina.subtotal | currency: 'Q. '}}
                         </td>
                         <td>
-                            <button class="btn btn-danger" ng-click="eliminarItem(cocina.idDetalleOrdenMesa)">Eliminar</button>
+                            <div class="input-group number-spinner">
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-danger" data-dir="up" ng-click="decrementar10(cocina)">
+                                        -10
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                                <label>&nbsp&nbsp&nbsp</label>
+                                <span class="input-group-btn data-dwn">
+                                    <button class="btn btn-default btn-info" data-dir="dwn" ng-click="(cocina.cantidadAPagar == null) ? cocina.cantidadAPagar = 0 : (cocina.cantidadAPagar > 0 ? cocina.cantidadAPagar = cocina.cantidadAPagar - 1 : cocina.cantidadAPagar = 0);"
+                                        ng-mousedown='mouseDown(cocina, "down")' ng-mouseup="mouseUp()">
+                                        -
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </span>
+                                <input type="text" class="form-control text-center" ng-model="cocina.cantidadAPagar" min="-10" max="40">
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-info" data-dir="up" ng-click="incrementar(cocina)" ng-mousedown='mouseDown(cocina, "up")'
+                                        ng-mouseup="mouseUp()">
+                                        +
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                                <label>&nbsp&nbsp&nbsp</label>
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-warning" data-dir="up" ng-click="incrementar10(cocina)">
+                                        +10
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                            </div>
                         </td>
                         <td>
-                            <button class="btn btn-warning" ng-click="pagarItem(cocina.idDetalleOrdenMesa)"> &nbsp&nbsp Pagar &nbsp&nbsp </button>
+                            <button class="btn btn-danger" ng-click="eliminarItem(cocina)">Eliminar</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning" ng-click="pagarItem(cocina)">Pagar</button>
                         </td>
                     </tr>
                     <!-- Bar -->
                     <tr class="table-secondary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in cocinaListBar">
                         <!-- <td>{{cocina.cantidad}}</td> -->
                         <td>{{cocina.cantidad}}</td>
+                        <td>
+                            <b>{{cocina.cantidadPagada}}</b>
+                        </td>
+                        <td>
+                            <b>{{cocina.cantidadEliminada}}</b>
+                        </td>
+                        <td>
+                            <b>{{cocina.cantidad - cocina.cantidadPagada - cocina.cantidadEliminada}}</b>
+                        </td>
                         <td style="font-weight: bolder">{{cocina.nombre}}</td>
                         <td style="font-weight: bolder">{{cocina.categoria}}</td>
                         <td>{{cocina.precio}}</td>
@@ -71,33 +126,74 @@
                             {{cocina.subtotal | currency: 'Q. '}}
                         </td>
                         <td>
-                            <button class="btn btn-danger" ng-click="eliminarItem(cocina.idDetalleOrdenMesa)">Eliminar</button>
+                            <div class="input-group number-spinner">
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-danger" data-dir="up" ng-click="decrementar10(cocina)">
+                                        -10
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                                <label>&nbsp&nbsp&nbsp</label>
+                                <span class="input-group-btn data-dwn">
+                                    <button class="btn btn-default btn-info" data-dir="dwn" ng-click="(cocina.cantidadAPagar == null) ? cocina.cantidadAPagar = 0 : (cocina.cantidadAPagar > 0 ? cocina.cantidadAPagar = cocina.cantidadAPagar - 1 : cocina.cantidadAPagar = 0);"
+                                        ng-mousedown='mouseDown(cocina, "down")' ng-mouseup="mouseUp()">
+                                        -
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </span>
+                                <input type="text" class="form-control text-center" ng-model="cocina.cantidadAPagar" min="-10" max="40">
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-info" data-dir="up" ng-click="incrementar(cocina)" ng-mousedown='mouseDown(cocina, "up")'
+                                        ng-mouseup="mouseUp()">
+                                        +
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                                <label>&nbsp&nbsp&nbsp</label>
+                                <span class="input-group-btn data-up">
+                                    <button class="btn btn-default btn-warning" data-dir="up" ng-click="incrementar10(cocina)">
+                                        +10
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                            </div>
                         </td>
                         <td>
-                            <button class="btn btn-warning" ng-click="pagarItem(cocina.idDetalleOrdenMesa)"> &nbsp&nbsp Pagar &nbsp&nbsp </button>
+                            <button class="btn btn-danger" ng-click="eliminarItem(cocina)">Eliminar</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning" ng-click="pagarItem(cocina)">Pagar</button>
                         </td>
                     </tr>
+                </tbody>
+            </table>
+            <table class="table table-hover table-dark">
+                <thead>
                     <tr>
-                        <td></td>
-                        <td style="font-weight: bolder">Total</td>
-                        <td></td>
-                        <td></td>
-                        <td>
+                        <td style="font-weight: bolder; text-align: right">Total a pagar:</td>
+                        <td style="text-align: left;">
                             <span class="badge badge-success" style="font-size: 100%; color:black">{{getTotal() | currency: 'Q. '}}</span>
                         </td>
+                        <td style="font-weight: bolder; text-align: right">Pendiente:</td>
+                        <td style="text-align: left;">
+                            <span class="badge badge-warning" style="font-size: 100%; color:rgb(0, 0, 0)">{{getTotalPendiente() | currency: 'Q. '}}</span>
+                        </td>
+                        <td style="font-weight: bolder; text-align: right">Pagado:</td>
+                        <td style="text-align: left;">
+                            <span class="badge badge-success" style="font-size: 100%; color:black">{{getTotalPagado() | currency: 'Q. '}}</span>
+                        </td>
                     </tr>
-
-                </tbody>
+                </thead>
             </table>
             <div class="row">
                 <div class="col-sm-4">
-                    <button class="btn btn-danger" ng-click="cerrar()" style="width: 100%">Cerrar sin pagar</button>
+                    <button class="btn btn-danger" ng-click="cerrar()" style="width: 100%">Eliminar monto pendiente<br> (El cliente se retira)</button>
                 </div>
                 <div class="col-sm-4">
-                    <button class="btn btn-success" ng-click="agregar()" style="font-size: 50px; width: 100%">+</button>
+                    <button class="btn btn-primary" ng-click="agregar()" style="width: 100%">Menú</button>
                 </div>
                 <div class="col-sm-4">
-                    <button class="btn btn-warning" ng-click="pagarOrden()" style="width: 100%">Pagada</button>
+                    <button class="btn btn-warning" ng-click="pagarOrden()" style="width: 100%">Pagar monto pendiente<br> (El cliente se retira)</button>
                 </div>
             </div>
 

@@ -68,6 +68,12 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', '$interval'
         });
     };
 
+    $scope.menu = function () {
+        $http.post('/ResumenOrden/ResumenOrdenDetalleAgregar', $scope.Mesa).then(function (res) {
+            $window.location.href = res.data.redireccionar;
+        });
+    };
+
     $scope.cambiarMesa = function () {
         $http.post('/SeleccionBar/RedireccionarMesa').then(function (response) {
             $window.location.href = response.data.redireccionar;
@@ -87,7 +93,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', '$interval'
     };
 
     $scope.platos = function () {
-        $http.post('/SeleccionBar/RedireccionarPlatos').then(function (response) {
+        $http.post('/Categoria/CategoriaCocina').then(function (response) {
             $window.location.href = response.data.redireccionar;
         });
     };

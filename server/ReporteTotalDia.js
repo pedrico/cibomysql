@@ -39,7 +39,7 @@ router.post('/ReporteTotalDiaDetalleCocina', function (req, res) {
 
 
 
-    sql = ` select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , dom.precio, dom.cantidad, dom.precio * dom.cantidad as subtotal, ccc.nombre as categoria
+    sql = ` select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , dom.precio, dom.cantidadPagada as cantidad, dom.precio * dom.cantidadPagada as subtotal, ccc.nombre as categoria
             from 
             Mesa m
             join Sesion s on m.id = s.IdMesa
@@ -83,7 +83,7 @@ router.post('/ReporteTotalDiaDetalleBar', function (req, res) {
 
 
 
-    sql = ` select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , dom.precio, dom.cantidad, dom.precio * dom.cantidad as subtotal, cbc.nombre as categoria
+    sql = ` select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , dom.precio, dom.cantidadPagada as cantidad, dom.precio * dom.cantidadPagada as subtotal, cbc.nombre as categoria
             from 
             Mesa m
             join Sesion s on m.id = s.IdMesa

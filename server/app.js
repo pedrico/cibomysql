@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 //Documentación de express-session
 //https://github.com/expressjs/session#options
 //Duracion de la sesion seteada en 1hora = 360000
-app.use(session({ secret: 'abcd1234', resave: false, saveUninitialized: false, cookie: { secure: false, maxAge: 360000 } }));
+app.use(session({ secret: 'abcd1234', resave: false, saveUninitialized: false, cookie: { secure: false, maxAge: 3600000 } }));
 //Configuro localmente los estilos Bootstrap, JQyery https://stackoverflow.com/questions/22792254/how-do-i-load-bootstrap-using-npm
 app.use('/js', express.static(path.resolve('../js')));
 app.use('/css', express.static(path.resolve('../css')));

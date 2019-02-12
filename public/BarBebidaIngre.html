@@ -27,7 +27,7 @@
 
                     </div>
                     <div class="col-sm-5">
-                        <select class="form-control" ng-model="ingreSeleccionado" ng-options="x.nombre+'-'+x.descripcion  for x in names">
+                        <select class="form-control" ng-model="ingreSeleccionado" ng-options="x.nombre + (x.descripcion != null ? (' - ' + x.descripcion) : '')  for x in names">
                         </select>
                     </div>
                     <div class="col-sm-6">
@@ -46,7 +46,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                        <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="ingre in IngreCocinaList">
+                    <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="ingre in IngreCocinaList">
                         <td style="font-weight: bolder">{{ingre.nombre}}</td>
                         <td>{{ingre.descripcion}}</td>
                         <td>

@@ -41,31 +41,35 @@ router.get('/CuentaDetalleCocina', function (req, res) {
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
-        NumeroSesion = result[0].num;
+        if (result.length > 0) { //Si la mesa nunca ha sido seleccionada, la sesion no existe y el arreglo devuelto es vacío.
+            NumeroSesion = result[0].num;
 
-        sql = ` select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad, dom.precio * dom.cantidad as subtotal, ccc.nombre as categoria
-        from 
-        Mesa m
-        join Sesion s on m.id = s.IdMesa
-        join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
-        join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1        
-        left join CatCocinaCategoria ccc on ccc.id = ccp.idCocinaCategoria
-        where m.id = ${NumeroMesa}
-        and s.num = ${NumeroSesion}
-        and s.Cerrada = 0
-        and dom.Enviada = 2
-        group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad;
-        `;
+            sql = ` select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad, dom.cantidadPagada, dom.cantidadEliminada,
+            dom.precio * (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada) as subtotal, ccc.nombre as categoria
+            from 
+            Mesa m
+            join Sesion s on m.id = s.IdMesa
+            join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+            join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1        
+            left join CatCocinaCategoria ccc on ccc.id = ccp.idCocinaCategoria
+            where m.id = ${NumeroMesa}
+            and s.num = ${NumeroSesion}
+            and s.Cerrada = 0
+            and (dom.Enviada = 2 or dom.Enviada = 4)
+            group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad;
+            `;
 
-        if (result.length == 0) {
-            res.json({});
-        }
-        else {
-            con.query(sql, function (err, result, fields) {
-                if (err) throw err;
-                console.log(JSON.stringify(result));
-                res.json(result);
-            });
+            if (result.length == 0) {
+                res.json({});
+            }
+            else {
+                console.log(sql);
+                con.query(sql, function (err, result, fields) {
+                    if (err) throw err;
+                    console.log(JSON.stringify(result));
+                    res.json(result);
+                });
+            }
         }
     });
 });
@@ -85,31 +89,34 @@ router.get('/CuentaDetalleBar', function (req, res) {
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
-        NumeroSesion = result[0].num;
+        if (result.length > 0) { //Si la mesa nunca ha sido seleccionada, la sesion no existe y el arreglo devuelto es vacío.
+            NumeroSesion = result[0].num;
 
-        sql = ` select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad, dom.precio * dom.cantidad as subtotal, cbc.nombre as categoria
-        from 
-        Mesa m
-        join Sesion s on m.id = s.IdMesa
-        join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
-        join CatBarBebida ccp on dom.IdItem = ccp.Id and dom.Categoria = 2       
-        left join CatBarCategoria cbc on cbc.id = ccp.idBarCategoria
-        where m.id = ${NumeroMesa}
-        and s.num = ${NumeroSesion}
-        and s.Cerrada = 0
-        and dom.Enviada = 2
-        group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad;
-        `;
+            sql = ` select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad, dom.cantidadPagada, dom.cantidadEliminada,
+            dom.precio * (dom.cantidad -dom.cantidadEliminada - dom.cantidadPagada) as subtotal, cbc.nombre as categoria
+            from 
+            Mesa m
+            join Sesion s on m.id = s.IdMesa
+            join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+            join CatBarBebida ccp on dom.IdItem = ccp.Id and dom.Categoria = 2       
+            left join CatBarCategoria cbc on cbc.id = ccp.idBarCategoria
+            where m.id = ${NumeroMesa}
+            and s.num = ${NumeroSesion}
+            and s.Cerrada = 0
+            and (dom.Enviada = 2 or dom.Enviada = 4)
+            group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad;
+            `;
 
-        if (result.length == 0) {
-            res.json({});
-        }
-        else {
-            con.query(sql, function (err, result, fields) {
-                if (err) throw err;
-                console.log(JSON.stringify(result));
-                res.json(result);
-            });
+            if (result.length == 0) {
+                res.json({});
+            }
+            else {
+                con.query(sql, function (err, result, fields) {
+                    if (err) throw err;
+                    console.log(JSON.stringify(result));
+                    res.json(result);
+                });
+            }
         }
     });
 });
@@ -131,7 +138,7 @@ router.put('/CuentaPagarOrden', function (req, res) {
         console.log(JSON.stringify(result));
         NumeroSesion = result[0].num;
 
-        sql = `UPDATE DetalleOrdenMesa SET Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE idMesa = ${NumeroMesa} and numSesion = ${NumeroSesion}`;
+        sql = `UPDATE DetalleOrdenMesa SET cantidadPagada = cantidad - cantidadEliminada, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE idMesa = ${NumeroMesa} and numSesion = ${NumeroSesion}`;
         con.query(sql, function (err, result) {
             if (err) throw err;
             console.log("Number of records updated: " + result.affectedRows);
@@ -161,7 +168,7 @@ router.put('/Cerrar', function (req, res) {
         console.log(JSON.stringify(result));
         NumeroSesion = result[0].num;
 
-        sql = `UPDATE DetalleOrdenMesa SET Enviada = 3, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE idMesa = ${NumeroMesa} and numSesion = ${NumeroSesion}`;
+        sql = `UPDATE DetalleOrdenMesa SET cantidadEliminada = cantidad - cantidadPagada, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE idMesa = ${NumeroMesa} and numSesion = ${NumeroSesion}`;
         con.query(sql, function (err, result) {
             if (err) throw err;
             console.log("Number of records updated: " + result.affectedRows);
@@ -177,8 +184,11 @@ router.put('/Cerrar', function (req, res) {
 
 router.put('/EliminarItem', function (req, res) {
     var idDetalleOrdenMesa = req.body.idDetalleOrdenMesa;
+    var cantidadEliminada = req.body.cantidadEliminada;
 
-    var sql = `UPDATE DetalleOrdenMesa SET Enviada = 3, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE id = ${idDetalleOrdenMesa}`;
+    var sql = `UPDATE DetalleOrdenMesa      
+    SET cantidadEliminada = cantidadEliminada + ${cantidadEliminada}, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE id = ${idDetalleOrdenMesa}`;
+    console.log(sql);
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Number of records updated: " + result.affectedRows);
@@ -189,8 +199,11 @@ router.put('/EliminarItem', function (req, res) {
 
 router.put('/PagarItem', function (req, res) {
     var idDetalleOrdenMesa = req.body.idDetalleOrdenMesa;
+    var cantidadPagada = req.body.cantidadPagada;
 
-    var sql = `UPDATE DetalleOrdenMesa SET Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE id = ${idDetalleOrdenMesa}`;
+    var sql = `UPDATE DetalleOrdenMesa    
+    SET cantidadPagada = cantidadPagada + ${cantidadPagada}, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE id = ${idDetalleOrdenMesa}`;
+    console.log(sql);
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Number of records updated: " + result.affectedRows);
