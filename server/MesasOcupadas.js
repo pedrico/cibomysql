@@ -24,17 +24,17 @@ router.get('/', function (req, res) {
 
 router.get('/Listado', function (req, res) {
     //Seleccion de saldo de mesas abiertas (aún no canceladas)
-    var sql = `select m.id, sum(dom.precio) as total
+    var sql = `select m.id, sum(dom.precio * (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada)) as total
     from 
     Mesa m
     join Sesion s on m.id = s.IdMesa
     join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
-    left join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1        
-    left join CatBarBebida cbb on dom.IdItem = cbb.Id and dom.Categoria = 2 
-    where 
+    
+    where    
     s.Cerrada = 0
-    and dom.Enviada = 2
-    group by m.id;        `;
+    and (dom.Enviada = 2 or dom.Enviada = 4)
+    group by m.id;
+    `;
     con.query(sql, function (err, result, fields) {
         if (err) throw err;
         console.log(JSON.stringify(result));
@@ -65,7 +65,7 @@ router.put('/Cerrar', function (req, res) {
         console.log(JSON.stringify(result));
         NumeroSesion = result[0].num;
 
-        sql = `UPDATE DetalleOrdenMesa SET Enviada = 3, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE idMesa = ${NumeroMesa} and numSesion = ${NumeroSesion}`;
+        sql = `UPDATE DetalleOrdenMesa SET cantidadEliminada = cantidad - cantidadPagada, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE idMesa = ${NumeroMesa} and numSesion = ${NumeroSesion}`;
         con.query(sql, function (err, result) {
             if (err) throw err;
             console.log("Number of records updated: " + result.affectedRows);
@@ -84,6 +84,7 @@ router.put('/Pagar', function (req, res) {
 
     //Se verifica si hay una session OrdenMesa abierta    
     var NumeroMesa = req.body.NumeroMesa;
+    var NumeroSesion = -1;
     var OrdenMesaResult = null;
 
     var sql = ` select * from Sesion
@@ -96,7 +97,7 @@ router.put('/Pagar', function (req, res) {
         console.log(JSON.stringify(result));
         NumeroSesion = result[0].num;
 
-        sql = `UPDATE DetalleOrdenMesa SET Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE idMesa = ${NumeroMesa} and numSesion = ${NumeroSesion}`;
+        sql = `UPDATE DetalleOrdenMesa SET cantidadPagada = cantidad - cantidadEliminada, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE idMesa = ${NumeroMesa} and numSesion = ${NumeroSesion}`;
         con.query(sql, function (err, result) {
             if (err) throw err;
             console.log("Number of records updated: " + result.affectedRows);

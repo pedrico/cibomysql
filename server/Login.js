@@ -24,9 +24,9 @@ router.get('/', function (req, res) {
 
 router.post('/login', function (req, res) {
     req.session.usuario = req.body.nombre;
-    req.session.save();
-    res.send({ redireccionar: '/SeleccionMesa' });
-
+    req.session.save(function () {
+        res.send({ redireccionar: '/SeleccionMesa' });
+    });
 });
 
 router.get('/UsrLogin', function (req, res) {

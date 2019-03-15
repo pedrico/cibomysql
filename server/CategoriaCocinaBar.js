@@ -43,19 +43,22 @@ router.get('/Bar', function (req, res) {
 router.post('/CategoriaCocina', function (req, res) {
     req.session.NuevoPlato = null;
     // delete req.session.NuevoPlato;
-    req.session.save();
-    console.log("Set NuevoPlato = null");
-    console.log(req.session);
-    res.send({ redireccionar: '/SeleccionCocina' });
+    req.session.save(function () {
+        console.log("Set NuevoPlato = null");
+        console.log(req.session);
+        res.send({ redireccionar: '/SeleccionCocina' });
+    });
+
 });
 
 router.post('/CategoriaBar', function (req, res) {
     req.session.NuevoPlato = null;
     // delete req.session.NuevoPlato;
-    req.session.save();
-    console.log("Set NuevoPlato = null");
-    console.log(req.session);
-    res.send({ redireccionar: '/SeleccionBar' });
+    req.session.save(function () {
+        console.log("Set NuevoPlato = null");
+        console.log(req.session);
+        res.send({ redireccionar: '/SeleccionBar' });
+    });
 });
 
 

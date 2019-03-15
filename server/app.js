@@ -52,6 +52,7 @@ var MesasOcupadas = require('./MesasOcupadas');
 var CategoriaCocinaBar = require('./CategoriaCocinaBar');
 var CatUsuario = require('./CatUsuario');
 var Login = require('./Login');
+//var Impresion = require('./Impresion');
 
 app.use('/CatCocinaCategoria', CatCocinaCategoria);
 app.use('/CatCocina', CatCocina);
@@ -73,7 +74,8 @@ app.use('/ReporteTotalDia', ReporteTotalDia);
 app.use('/MesasOcupadas', MesasOcupadas);
 app.use('/CategoriaCocinaBar', CategoriaCocinaBar);
 app.use('/CatUsuario', CatUsuario);
-app.use('/Login', Login);
+app.use('/Login', Login);   
+//app.use('/Impresion', Impresion);
 
 
 con.connect(function (err) {

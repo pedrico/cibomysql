@@ -86,7 +86,7 @@
                             <th scope="col" style="width: 30px">Cantidad</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Descripcion</th>
-                            <th scope="col">Fecha</th>
+                            <!-- <th scope="col">Fecha</th> -->
                             <th scope="col">Precio/unidad</th>
                             <th scope="col">Subtotal</th>
                         </tr>
@@ -96,7 +96,7 @@
                             <td style="width: 30px">{{cocina.cantidad}} </td>
                             <td style="font-weight: bolder">{{cocina.nombre}}</td>
                             <td style="font-weight: bolder">{{cocina.categoria}}</td>
-                            <td> {{formatFecha(cocina.fechaUpdate)}}</td>
+                            <!-- <td> {{formatFecha(cocina.fechaUpdate)}}</td> -->
                             <td>
                                 {{cocina.precio | currency: 'Q. '}}
                             </td>
@@ -109,7 +109,7 @@
                             <td style="width: 30px">{{cocina.cantidad}} </td>
                             <td style="font-weight: bolder">{{cocina.nombre}}</td>
                             <td style="font-weight: bolder">{{cocina.categoria}}</td>
-                            <td> {{formatFecha(cocina.fechaUpdate)}}</td>
+                            <!-- <td> {{formatFecha(cocina.fechaUpdate)}}</td> -->
                             <td>
                                 {{cocina.precio | currency: 'Q. '}}
                             </td>
@@ -121,7 +121,7 @@
                             <td></td>
                             <td style="font-weight: bolder">Total</td>
                             <td></td>
-                            <td></td>
+                            <!-- <td></td> -->
                             <td></td>
                             <td>
                                 <span class="badge badge-success" style="font-size: 100%; color:black">{{getTotal() | currency: 'Q. '}}</span>

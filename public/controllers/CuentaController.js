@@ -184,6 +184,11 @@ ResumenOrdenModule.controller('CtrlResumenOrden', ['$scope', '$http', '$window',
         });
     };
 
+    $scope.ticket = function () {                
+        $http.post('/Cuenta/ticket').then(function (res) {            
+        });
+    };
+
     $scope.clear = function () {
         refresh();
     }

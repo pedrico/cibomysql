@@ -39,7 +39,7 @@ router.post('/ReporteTotalDiaDetalleCocina', function (req, res) {
 
 
 
-    sql = ` select ccp.nombre, dom.precio, sum (dom.cantidadPagada) as cantidad, dom.precio * sum( dom.cantidadPagada) as subtotal, ccc.nombre as categoria
+    sql = ` select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , dom.precio, dom.cantidadPagada as cantidad, dom.precio * dom.cantidadPagada as subtotal, ccc.nombre as categoria
             from 
             Mesa m
             join Sesion s on m.id = s.IdMesa
@@ -49,8 +49,7 @@ router.post('/ReporteTotalDiaDetalleCocina', function (req, res) {
             where dom.Enviada = 4
             and dom.fechaUpdate >= '${fechaini}' 
             and dom.fechaUpdate <= '${fechafin}'
-            group by ccp.nombre, ccc.nombre, dom.precio
-            order by ccp.nombre;
+            order by dom.fechaUpdate;
                 `;
     console.log(sql);
     con.query(sql, function (err, result, fields) {
@@ -84,18 +83,17 @@ router.post('/ReporteTotalDiaDetalleBar', function (req, res) {
 
 
 
-    sql = ` select ccp.nombre, dom.precio, sum (dom.cantidadPagada) as cantidad, dom.precio * sum( dom.cantidadPagada) as subtotal, ccc.nombre as categoria
+    sql = ` select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.descripcion , dom.precio, dom.cantidadPagada as cantidad, dom.precio * dom.cantidadPagada as subtotal, cbc.nombre as categoria
             from 
             Mesa m
             join Sesion s on m.id = s.IdMesa
             join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
-            join CatBarBebida ccp on dom.IdItem = ccp.Id and dom.Categoria = 2 
-            left join CatBarCategoria ccc on ccc.id = ccp.idBarCategoria
+            join CatBarBebida ccp on dom.IdItem = ccp.Id and dom.Categoria = 2
+            left join CatBarCategoria cbc on cbc.id = ccp.idBarCategoria
             where dom.Enviada = 4
             and dom.fechaUpdate >= '${fechaini}' 
             and dom.fechaUpdate <= '${fechafin}'
-            group by ccp.nombre, ccc.nombre, dom.precio
-            order by ccp.nombre;
+            order by dom.fechaUpdate;
                 `;
     console.log(sql);
     con.query(sql, function (err, result, fields) {

@@ -25,9 +25,14 @@ router.get('/', function (req, res) {
     if (req.session.usuario != null) {
         //Para el áre de seleccion de platos, debe validarse que la mesa haya sido seleccionada
         if (req.session.NumeroMesa != null) {
+            console.log("Ingredientes excluidos cocina antes " + req.session.IngredientesExcluidos);
             var IngredientesExcluidos = [];
             req.session.IngredientesExcluidos = IngredientesExcluidos;
-            res.sendFile(path.resolve('../public/SeleccionCocina.html'));
+            req.session.save(function () {
+                console.log("Ingredientes excluidos cocina despues " + req.session.IngredientesExcluidos);
+                res.sendFile(path.resolve('../public/SeleccionCocina.html'));
+            });
+
         } else {
             res.sendfile(path.resolve('../public/SeleccionMesa.html'));
         }
@@ -100,16 +105,8 @@ router.post('/', function (req, res) {
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
-                        sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, cantidad, Enviada, fechaInsert, fechaUpdate) VALUES ?";
-                        values = [
-                            [NumeroMesa, 1, idPlato, 1, result[0].precio, cantidad, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
-                        ];
-                        con.query(sql, [values], function (err, resultDetalle) {
-                            if (err) throw err;
-                            resultDetalle.nombre = result[0].nombre;
-                            resultDetalle.cantidad = cantidad;
-                            console.log(JSON.stringify(resultDetalle));
-                            res.json(resultDetalle);
+                        insertarDetalle(NumeroMesa, NumeroSesion, idPlato, result[0].precio, cantidad, result[0].nombre).then(function (response) {
+                            res.json(response);
                         });
                     });
                 });
@@ -137,16 +134,20 @@ router.post('/', function (req, res) {
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
-                        sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, cantidad, Enviada, fechaInsert, fechaUpdate) VALUES ?";
-                        values = [
-                            [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, cantidad, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
-                        ];
-                        con.query(sql, [values], function (err, resultDetalle) {
-                            if (err) throw err;
-                            resultDetalle.nombre = result[0].nombre;
-                            resultDetalle.cantidad = cantidad;
-                            console.log(JSON.stringify(resultDetalle));
-                            res.json(resultDetalle);
+                        // tieneMismoPlato(NumeroMesa, NumeroSesion, idPlato)
+                        //     .then(function (response) {
+                        //         if (response) {
+                        //             return actualizarDetalle(NumeroMesa, NumeroSesion, idPlato, cantidad, result[0].nombre);
+                        //         }
+                        //         else {
+                        //             return insertarDetalle(NumeroMesa, NumeroSesion, idPlato, result[0].precio, cantidad, result[0].nombre);
+                        //         }
+                        //     })
+                        //     .then(function (response) {
+                        //         res.json(response);
+                        //     });
+                        insertarDetalle(NumeroMesa, NumeroSesion, idPlato, result[0].precio, cantidad, result[0].nombre).then(function (response) {
+                            res.json(response);
                         });
                     });
                 } else {
@@ -163,16 +164,8 @@ router.post('/', function (req, res) {
                         con.query(sql, function (err, result, fields) {
                             if (err) throw err;
                             console.log(JSON.stringify(result));
-                            sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, cantidad, Enviada, fechaInsert, fechaUpdate) VALUES ?";
-                            values = [
-                                [NumeroMesa, NumeroSesion, idPlato, 1, result[0].precio, cantidad, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
-                            ];
-                            con.query(sql, [values], function (err, resultDetalle) {
-                                if (err) throw err;
-                                resultDetalle.nombre = result[0].nombre;
-                                resultDetalle.cantidad = cantidad;
-                                console.log(JSON.stringify(resultDetalle));
-                                res.json(resultDetalle);
+                            insertarDetalle(NumeroMesa, NumeroSesion, idPlato, result[0].precio, cantidad, result[0].nombre).then(function (response) {
+                                res.json(response);
                             });
                         });
                     });
@@ -180,9 +173,60 @@ router.post('/', function (req, res) {
             });
         }
     });
-
-
 });
+
+
+function insertarDetalle(NumeroMesa, NumeroSesion, idPlato, precio, cantidad, nombre) {
+    return new Promise(function (resolve, reject) {
+        console.log('Insertando desde promesa');
+        var sql = "INSERT INTO DetalleOrdenMesa (idMesa, numSesion, idItem, Categoria, Precio, cantidad, Enviada, fechaInsert, fechaUpdate) VALUES ?";
+        values = [
+            [NumeroMesa, NumeroSesion, idPlato, 1, precio, cantidad, 0, new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' '), new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')]
+        ];
+        con.query(sql, [values], function (err, resultDetalle) {
+            if (err) reject('Error durante insercción ' + err);
+            resultDetalle.nombre = nombre;
+            resultDetalle.cantidad = cantidad;
+            console.log(JSON.stringify(resultDetalle));
+            resolve(resultDetalle);
+        });
+    })
+}
+
+function actualizarDetalle(NumeroMesa, NumeroSesion, idPlato, cantidad, nombre) {
+    return new Promise(function (resolve, reject) {
+        console.log('Insertando desde promesa');
+        var sql = `UPDATE DetalleOrdenMesa 
+        SET cantidad = cantidad + ${cantidad}
+        WHERE idMesa = ${NumeroMesa}
+        and numSesion = ${NumeroSesion}
+        and idItem = ${idPlato};
+        `;
+        con.query(sql, function (err, resultDetalle) {
+            if (err) reject('Error durante actualización ' + err);
+            resultDetalle.nombre = nombre;
+            resultDetalle.cantidad = cantidad;
+            console.log(JSON.stringify(resultDetalle));
+            resolve(resultDetalle);
+        });
+    })
+}
+
+function tieneMismoPlato(NumeroMesa, NumeroSesion, idPlato) {
+    return new Promise(function (resolve, reject) {
+        sql = ` select count(1) cantidad from DetalleOrdenMesa 
+        where idMesa = ${NumeroMesa}
+        and numSesion = ${NumeroSesion} 
+        and idItem = ${idPlato};`;
+        con.query(sql, function (err, result) {
+            if (err) reject('Error durante verificación de plato ' + err);
+            console.log("Verificando plato a insertar");
+            console.log(result);
+            if (result[0].cantidad > 0) resolve(true);
+            else resolve(false);
+        })
+    })
+}
 
 router.post('/RedireccionarMesa', function (req, res) {
     res.send({ redireccionar: '/SeleccionMesa' });

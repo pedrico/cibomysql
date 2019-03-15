@@ -1,4 +1,5 @@
 var express = require('express');
+var Impresion = require('./Impresion');
 
 var router = express.Router();
 var con;
@@ -138,15 +139,23 @@ router.put('/CuentaPagarOrden', function (req, res) {
         console.log(JSON.stringify(result));
         NumeroSesion = result[0].num;
 
-        sql = `UPDATE DetalleOrdenMesa SET cantidadPagada = cantidad - cantidadEliminada, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE idMesa = ${NumeroMesa} and numSesion = ${NumeroSesion}`;
+        sql = `
+            UPDATE DetalleOrdenMesa SET cantidadPagada = cantidad - cantidadEliminada, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' 
+            WHERE idMesa = ${NumeroMesa} 
+            and numSesion = ${NumeroSesion}
+            and Enviada = 2`;
         con.query(sql, function (err, result) {
             if (err) throw err;
             console.log("Number of records updated: " + result.affectedRows);
-            sql = `UPDATE Sesion SET Cerrada = 1 WHERE idMesa = ${NumeroMesa} and num = ${NumeroSesion}`;
-            con.query(sql, function (err, result) {
-                if (err) throw err;
-                console.log("Number of records updated: " + result.affectedRows);
-                res.send({ redireccionar: "/SeleccionMesa" });
+            Impresion.ticketDetalle(req, con).then(function (response) {
+                return Impresion.imprimir2(response, "-");
+            }).then(function (response) {
+                sql = `UPDATE Sesion SET Cerrada = 1 WHERE idMesa = ${NumeroMesa} and num = ${NumeroSesion}`;
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                    console.log("Number of records updated: " + result.affectedRows);
+                    res.send({ redireccionar: "/SeleccionMesa" });
+                });
             });
         });
     });
@@ -168,15 +177,23 @@ router.put('/Cerrar', function (req, res) {
         console.log(JSON.stringify(result));
         NumeroSesion = result[0].num;
 
-        sql = `UPDATE DetalleOrdenMesa SET cantidadEliminada = cantidad - cantidadPagada, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE idMesa = ${NumeroMesa} and numSesion = ${NumeroSesion}`;
+        sql = `
+            UPDATE DetalleOrdenMesa SET cantidadEliminada = cantidad - cantidadPagada, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' 
+            WHERE idMesa = ${NumeroMesa} 
+            and numSesion = ${NumeroSesion}
+            and Enviada = 2`;
         con.query(sql, function (err, result) {
             if (err) throw err;
             console.log("Number of records updated: " + result.affectedRows);
-            sql = `UPDATE Sesion SET Cerrada = 1 WHERE idMesa = ${NumeroMesa} and num = ${NumeroSesion}`;
-            con.query(sql, function (err, result) {
-                if (err) throw err;
-                console.log("Number of records updated: " + result.affectedRows);
-                res.send({ redireccionar: "/SeleccionMesa" });
+            Impresion.ticketDetalle(req, con).then(function (response) {
+                return Impresion.imprimir2(response, "!");
+            }).then(function (response) {
+                sql = `UPDATE Sesion SET Cerrada = 1 WHERE idMesa = ${NumeroMesa} and num = ${NumeroSesion}`;
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                    console.log("Number of records updated: " + result.affectedRows);
+                    res.send({ redireccionar: "/SeleccionMesa" });
+                });
             });
         });
     });
@@ -210,6 +227,21 @@ router.put('/PagarItem', function (req, res) {
         res.json(result);
     });
 
+});
+
+router.post('/ticket', function (req, res) {
+    var sql = "select 'Cibo'";
+
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log(JSON.stringify(result));
+        //imprimir();
+        Impresion.ticketDetalle(req, con).then(function (response) {
+            return Impresion.imprimir2(response, ":");
+        }).then(function (response) {
+            res.send({ redireccionar: "/SeleccionMesa" });
+        });
+    });
 });
 
 module.exports = router;

@@ -30,19 +30,21 @@ router.get('/CategoriaSesionMesa', function (req, res) {
 router.post('/CategoriaCocina', function (req, res) {
     req.session.NuevoPlato = null;
     // delete req.session.NuevoPlato;
-    req.session.save();
-    console.log("Set NuevoPlato = null");
-    console.log(req.session);
-    res.send({ redireccionar: '/CategoriaCocinaBar?seccion=1' });
+    req.session.save(function () {
+        console.log("Set NuevoPlato = null");
+        console.log(req.session);
+        res.send({ redireccionar: '/CategoriaCocinaBar?seccion=1' });
+    });
 });
 
 router.post('/CategoriaBar', function (req, res) {
     req.session.NuevoPlato = null;
     // delete req.session.NuevoPlato;
-    req.session.save();
-    console.log("Set NuevoPlato = null");
-    console.log(req.session);
-    res.send({ redireccionar: '/CategoriaCocinaBar?seccion=2' });
+    req.session.save(function () {
+        console.log("Set NuevoPlato = null");
+        console.log(req.session);
+        res.send({ redireccionar: '/CategoriaCocinaBar?seccion=2' });
+    });
 });
 
 router.post('/RedireccionarMesa', function (req, res) {

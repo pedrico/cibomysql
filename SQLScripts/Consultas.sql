@@ -8,8 +8,11 @@ select * from categoria;
 -- DROP TABLE CatBebidaIngre;
 -- DROP TABLE Sesion;
 -- DROP TABLE DetalleOrdenMesa;
-DROP TABLE Login;
+-- DROP TABLE Login;
 
+DELETE from DetalleOrdenMesa;
+DELETE FROM Sesion;
+DELETE FROM Mesa;
 
 
 
@@ -216,3 +219,125 @@ select dom.id as idDetalleOrdenMesa, dom.fechaUpdate, ccp.id, ccp.nombre, ccp.de
     and dom.fechaUpdate >= '2019-1-24 23:49:00'
     and dom.fechaUpdate <= '2019-1-26 23:49:00'
     order by dom.fechaUpdate;    
+    
+    
+    
+select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad, dom.cantidadPagada, dom.precio * dom.cantidad as subtotal, ccc.nombre as categoria
+	from 
+	Mesa m
+	join Sesion s on m.id = s.IdMesa
+	join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+	join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1        
+	left join CatCocinaCategoria ccc on ccc.id = ccp.idCocinaCategoria
+	where m.id = 
+	and s.num = ${NumeroSesion}
+	and s.Cerrada = 0
+	and dom.Enviada = 2
+	or dom.Enviada = 4
+	group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad;    
+    
+    
+    
+
+ select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad, dom.cantidadPagada, dom.precio * dom.cantidad as subtotal, ccc.nombre as categoria
+        from
+        Mesa m
+        join Sesion s on m.id = s.IdMesa
+        join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+        join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1
+        left join CatCocinaCategoria ccc on ccc.id = ccp.idCocinaCategoria
+        where m.id = 11
+        and s.num = 4
+        and s.Cerrada = 0
+        and dom.Enviada = 2
+        or dom.Enviada = 4
+        group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad;    
+        
+
+UPDATE DetalleOrdenMesa AS a 
+JOIN DetalleOrdenMesa AS b on a.id = b.id
+SET a.cantidadPagada = b.cantidadPagada + 1
+    , a.Enviada = 4, a.fechaUpdate = '2019-02-11 17:17:19' WHERE a.id = 1;
+
+update DetalleOrdenMesa set cantidadPagada = cantidadPagada + 1, Enviada = 4, fechaUpdate = '2019-02-11 17:17:19' WHERE id = 1;
+    
+    
+select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad, dom.cantidadPagada, dom.cantidadEliminada,
+        dom.precio * (dom.cantidad -dom.cantidadEliminada) as subtotal, ccc.nombre as categoria
+        from
+        Mesa m
+        join Sesion s on m.id = s.IdMesa
+        join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+        join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1
+        left join CatCocinaCategoria ccc on ccc.id = ccp.idCocinaCategoria
+        where m.id = 11
+        and s.num = 4
+        and s.Cerrada = 0
+        and dom.Enviada = 2
+        or dom.Enviada = 4
+        group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad;    
+
+
+select * from DetalleOrdenMesa;
+
+update DetalleOrdenMesa set cantidadPagada = cantidad where id in (1,3);
+        
+use restaurante;        
+
+select m.id, sum(dom.precio * (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada)) as Total
+from 
+Mesa m
+join Sesion s on m.id = s.IdMesa
+join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+
+where    
+s.Cerrada = 0
+and (dom.Enviada = 2 or dom.Enviada = 4)
+group by m.id;
+
+
+select * from DetalleOrdenMesa order by fechainsert desc;    
+
+select 'hola';
+select idMesa from Sesion group by idMesa;
+
+select count(1) cantidad from DetalleOrdenMesa 
+where idMesa = 14
+and numSesion = 4 
+and idItem = 100;
+
+
+
+
+		(select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad, dom.cantidadPagada, dom.cantidadEliminada,
+            dom.precio * (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada) as subtotal, ccc.nombre as categoria
+            from 
+            Mesa m
+            join Sesion s on m.id = s.IdMesa
+            join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+            join CatCocinaPlato ccp on dom.IdItem = ccp.Id and dom.Categoria = 1        
+            left join CatCocinaCategoria ccc on ccc.id = ccp.idCocinaCategoria
+            where m.id = 14
+            and s.num = 5
+            and s.Cerrada = 0
+            and (dom.Enviada = 2 or dom.Enviada = 4)
+            group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad)
+                    union
+                    (select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad, dom.cantidadPagada, dom.cantidadEliminada,
+                    dom.precio * (dom.cantidad -dom.cantidadEliminada - dom.cantidadPagada) as subtotal, cbc.nombre as categoria
+                    from 
+                    Mesa m
+                    join Sesion s on m.id = s.IdMesa
+                    join DetalleOrdenMesa dom on s.IdMesa = dom.IdMesa and s.Num = dom.numSesion
+                    join CatBarBebida ccp on dom.IdItem = ccp.Id and dom.Categoria = 2       
+                    left join CatBarCategoria cbc on cbc.id = ccp.idBarCategoria
+                    where m.id = 14
+                    and s.num = 5
+                    and s.Cerrada = 0
+                    and (dom.Enviada = 2 or dom.Enviada = 4)
+                    group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad);
+                    
+                    
+use restaurante;                    
+select * from CatBarIngre;
+select * from CatCocinaIngre;

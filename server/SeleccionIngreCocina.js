@@ -41,29 +41,27 @@ router.get('/:id', function (req, res) {
     var idPlato = req.params.id;
     var sql = "";
 
-    req.session.save();
-    console.log("Id del plato: " + idPlato);
+    req.session.save(function () {
+        console.log("Id del plato: " + idPlato);
+        if (req.session.IngredientesExcluidos != null && req.session.IngredientesExcluidos.length > 0) {
+            sql = ` select id, nombre, descripcion, imagen 
+                    from CocinaPlatoIngre cpl
+                    join CatCocinaIngre cci on cpl.idIngre = cci.id
+                    where idPlato = ${idPlato}
+                    and idIngre not in (${req.session.IngredientesExcluidos.join(',')})`;
+        } else {
+            sql = ` select id, nombre, descripcion, imagen 
+                    from CocinaPlatoIngre cpl
+                    join CatCocinaIngre cci on cpl.idIngre = cci.id
+                    where idPlato = ${idPlato}`;
+        }
 
-
-    if (req.session.IngredientesExcluidos != null && req.session.IngredientesExcluidos.length > 0) {
-        sql = ` select id, nombre, descripcion, imagen 
-                from CocinaPlatoIngre cpl
-                join CatCocinaIngre cci on cpl.idIngre = cci.id
-                where idPlato = ${idPlato}
-                and idIngre not in (${req.session.IngredientesExcluidos.join(',')})`;
-    } else {
-        sql = ` select id, nombre, descripcion, imagen 
-                from CocinaPlatoIngre cpl
-                join CatCocinaIngre cci on cpl.idIngre = cci.id
-                where idPlato = ${idPlato}`;
-    }
-
-    con.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        console.log(JSON.stringify(result));
-        res.json(result);
+        con.query(sql, function (err, result, fields) {
+            if (err) throw err;
+            console.log(JSON.stringify(result));
+            res.json(result);
+        });
     });
-
 });
 
 
@@ -77,10 +75,10 @@ router.put('/:id/Ingrediente/:idIngrediente', function (req, res) {
     IngredientesExcluidos.push(idIngrediente);
     req.session.IngredientesExcluidos = IngredientesExcluidos;
     console.log(req.session.IngredientesExcluidos.join(','));
-    req.session.save();
-    console.log(req.session.IngredientesExcluidos);
-    res.json({});
-
+    req.session.save(function () {
+        console.log(req.session.IngredientesExcluidos);
+        res.json({});
+    });
 });
 
 
@@ -121,7 +119,7 @@ router.post('/', function (req, res) {
                     if (err) throw err;
                     console.log(JSON.stringify(result));
                     console.log("Id del plato: " + idPlato);
-                    sql = `select id, nombre, descripcion, imagen 
+                    sql = `select id, nombre, descripcion, precio, imagen 
                     from CatCocinaPlato c
                     where id = ${idPlato}`;
                     con.query(sql, function (err, result, fields) {
@@ -171,7 +169,7 @@ router.post('/', function (req, res) {
                 var sesionCerrada = result[0].cerrada;
                 if (sesionCerrada == 0) {
                     //La cuenta de la mesa sigue abierta, se asigna el plato a la cuenta actual.
-                    sql = `select id, nombre, descripcion, imagen 
+                    sql = `select id, nombre, descripcion, precio, imagen 
                     from CatCocinaPlato c
                     where id = ${idPlato}`;
                     con.query(sql, function (err, result, fields) {
@@ -210,7 +208,7 @@ router.post('/', function (req, res) {
                         [NumeroSesion, NumeroMesa, 0]
                     ];
                     con.query(sql, [values], function (err, result) {
-                        sql = `select id, nombre, descripcion, imagen 
+                        sql = `select id, nombre, descripcion, precio, imagen 
                         from CatCocinaPlato c
                         where id = ${idPlato}`;
                         con.query(sql, function (err, result, fields) {
