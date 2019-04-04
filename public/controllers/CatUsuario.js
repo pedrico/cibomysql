@@ -37,16 +37,26 @@ myApp.controller('AppCtrl', ['$scope', '$http', '$window', function ($scope, $ht
                 bodynews: $scope.bodynews.slice(begin, end)
             }
         });
+
+        $http.get('CatUsuario/roles').then(function (response) {
+            $scope.roles = response.data;
+        });
+
     };
 
 
     refresh();
 
     $scope.addContact = function () {
-        $http.post('CatUsuario/usuario', $scope.cocina).then(function (response) {
-            console.log(response);
-            refresh();
-        });
+        if (angular.isUndefined($scope.cocina.idRol)) {
+            $window.alert('Seleccione un rol');
+        }
+        else {
+            $http.post('CatUsuario/usuario', $scope.cocina).then(function (response) {
+                console.log(response);
+                refresh();
+            });
+        }
     };
 
     $scope.remove = function (id) {

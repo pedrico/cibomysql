@@ -66,8 +66,8 @@ exports.imprimir2 = async function (detalleCocina, diferenciador) {
         console.log("Total a pendiente " + "Q." + objTotal.totalpendiente.toFixed(2));
         printer.println();
         printer.println("Total a pagar " + "Q." + objTotal.totalpagar.toFixed(2));
-        printer.println("Total a pagado " + "Q." + objTotal.totalpagado.toFixed(2));
-        printer.println("Total a pendiente " + "Q." + objTotal.totalpendiente.toFixed(2));
+        printer.println("Total pagado " + "Q." + objTotal.totalpagado.toFixed(2));
+        printer.println("Total pendiente " + "Q." + objTotal.totalpendiente.toFixed(2));
         printer.println();
         printer.alignCenter();
         printer.println("Te esperamos pronto!");
@@ -87,7 +87,7 @@ function imprimirLinea(objTotal, detalle) {
     printer.alignLeft();
     printer.println(detalle.cantidad + " " + detalle.categoria + " " + detalle.nombre + " -- " + "Q." + detalle.precio.toFixed(2) + "/u");
     printer.alignRight();
-    printer.println("Q." + detalle.pendiente.toFixed(2));
+    printer.println("Q." + detalle.subtotal.toFixed(2));
     objTotal.totalpagar += detalle.pagar;
     objTotal.totalpagado += detalle.pagado;
     objTotal.totalpendiente += detalle.pendiente;
@@ -114,7 +114,8 @@ exports.ticketDetalle = function (req, con) {
                 NumeroSesion = result[0].num;
 
                 sql = `
-                    (select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, (dom.cantidad - dom.cantidadEliminada) as cantidad, dom.cantidadPagada, dom.cantidadEliminada,
+                    (select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada) as cantidad, dom.cantidadPagada, dom.cantidadEliminada,
+                    dom.precio * (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada) as subtotal, 
                     dom.precio * (dom.cantidad - dom.cantidadEliminada) as pagar, 
                     dom.precio * (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada) as pendiente, 
                     dom.precio * (dom.cantidadPagada) as pagado, 
@@ -131,7 +132,8 @@ exports.ticketDetalle = function (req, con) {
                     and (dom.Enviada = 2 or dom.Enviada = 4)
                     group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad)
                     union
-                    (select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, (dom.cantidad - dom.cantidadEliminada) as cantidad, dom.cantidadPagada, dom.cantidadEliminada,
+                    (select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada) as cantidad, dom.cantidadPagada, dom.cantidadEliminada,
+                    dom.precio * (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada) as subtotal, 
                     dom.precio * (dom.cantidad - dom.cantidadEliminada) as pagar, 
                     dom.precio * (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada) as pendiente, 
                     dom.precio * (dom.cantidadPagada) as pagado, 
@@ -195,7 +197,8 @@ exports.ticketDetallePagado = function (req, con) {
                 NumeroSesion = result[0].num;
 
                 sql = `
-                    (select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, (dom.cantidad - dom.cantidadEliminada) as cantidad,  dom.cantidadPagada, dom.cantidadEliminada,
+                    (select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad - dom.cantidadEliminada as cantidad,  dom.cantidadPagada, dom.cantidadEliminada,
+                    dom.precio * (dom.cantidadPagada) as subtotal,
                     dom.precio * (dom.cantidad - dom.cantidadEliminada) as pagar, 
                     dom.precio * (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada) as pendiente, 
                     dom.precio * (dom.cantidadPagada) as pagado, 
@@ -212,7 +215,8 @@ exports.ticketDetallePagado = function (req, con) {
                     and (dom.Enviada = 2 or dom.Enviada = 4)
                     group by dom.id, ccp.id, ccp.Nombre, ccp.descripcion, dom.cantidad)
                     union
-                    (select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, (dom.cantidad - dom.cantidadEliminada) as cantidad,  dom.cantidadPagada, dom.cantidadEliminada,
+                    (select dom.id as idDetalleOrdenMesa, ccp.id, ccp.nombre, ccp.descripcion, dom.precio, dom.cantidad - dom.cantidadEliminada as cantidad,  dom.cantidadPagada, dom.cantidadEliminada,
+                    dom.precio * (dom.cantidadPagada) as subtotal,
                     dom.precio * (dom.cantidad - dom.cantidadEliminada) as pagar, 
                     dom.precio * (dom.cantidad - dom.cantidadEliminada - dom.cantidadPagada) as pendiente, 
                     dom.precio * (dom.cantidadPagada) as pagado, 

@@ -13,11 +13,11 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', '$interval'
             //Funcion map propia de los array, utilizada para asiganar la propiedad cantidad = 1 de todos los items del array.
             response.data.map(function (x) {
                 x.cantidad = 1;
-                return x
+                return x;
             });
 
             $scope.cocinaList = response.data;
-            $scope.alert = { message: 'hola', closable: true };
+            $scope.alert = { message: '', closable: true };
             console.log($scope.alert);
         });
 

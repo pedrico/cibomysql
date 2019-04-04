@@ -1,4 +1,5 @@
 var express = require('express');
+var ObtenerAccesos = require('./ObtenerAccesos');
 var Impresion = require('./Impresion');
 
 var router = express.Router();
@@ -18,8 +19,17 @@ router.use(function variablesGlobales(req, res, next) {
 router.get('/', function (req, res) {
     if (req.session.usuario != null) {
         //Para el áre de seleccion de platos, debe validarse que la mesa haya sido seleccionada
-        if (req.session.NumeroMesa != null) {
-            res.sendFile(path.resolve('../public/Cuenta.html'));
+        if (req.session.NumeroMesa != null && req.session.NumeroMesa != "") {
+            //Se validan accesos
+            var idUsuario = req.session.idUsuario;
+            ObtenerAccesos.ValidarAccesos(req, con, idUsuario, 16).then(function (response) {
+                if (response) {
+                    res.sendFile(path.resolve('../public/Cuenta.html'));
+                }
+                else {
+                    res.sendfile(path.resolve('../public/SeleccionMesa.html'));
+                }
+            });
         } else {
             res.sendfile(path.resolve('../public/SeleccionMesa.html'));
         }
@@ -143,11 +153,11 @@ router.put('/CuentaPagarOrden', function (req, res) {
             UPDATE DetalleOrdenMesa SET cantidadPagada = cantidad - cantidadEliminada, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' 
             WHERE idMesa = ${NumeroMesa} 
             and numSesion = ${NumeroSesion}
-            and Enviada = 2`;
+            and (Enviada = 2 or Enviada = 4)`;
         con.query(sql, function (err, result) {
             if (err) throw err;
             console.log("Number of records updated: " + result.affectedRows);
-            Impresion.ticketDetalle(req, con).then(function (response) {
+            Impresion.ticketDetallePagado(req, con).then(function (response) {
                 return Impresion.imprimir2(response, "-");
             }).then(function (response) {
                 sql = `UPDATE Sesion SET Cerrada = 1 WHERE idMesa = ${NumeroMesa} and num = ${NumeroSesion}`;
@@ -162,56 +172,74 @@ router.put('/CuentaPagarOrden', function (req, res) {
 });
 
 router.put('/Cerrar', function (req, res) {
+    //Se validan accesos
+    var idUsuario = req.session.idUsuario;
+    ObtenerAccesos.ValidarAccesos(req, con, idUsuario, 18).then(function (response) {
+        if (response) {
+            //Se verifica si hay una session OrdenMesa abierta    
+            var NumeroMesa = req.session.NumeroMesa;
+            var OrdenMesaResult = null;
 
-    //Se verifica si hay una session OrdenMesa abierta    
-    var NumeroMesa = req.session.NumeroMesa;
-    var OrdenMesaResult = null;
-
-    var sql = ` select * from Sesion
+            var sql = ` select * from Sesion
             where idMesa = ${NumeroMesa}
             and num = (select max(num)  as num
                 from Sesion 
                 where idMesa = ${NumeroMesa});`;
-    con.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        console.log(JSON.stringify(result));
-        NumeroSesion = result[0].num;
+            con.query(sql, function (err, result, fields) {
+                if (err) throw err;
+                console.log(JSON.stringify(result));
+                NumeroSesion = result[0].num;
 
-        sql = `
+                sql = `
             UPDATE DetalleOrdenMesa SET cantidadEliminada = cantidad - cantidadPagada, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' 
             WHERE idMesa = ${NumeroMesa} 
             and numSesion = ${NumeroSesion}
-            and Enviada = 2`;
-        con.query(sql, function (err, result) {
-            if (err) throw err;
-            console.log("Number of records updated: " + result.affectedRows);
-            Impresion.ticketDetalle(req, con).then(function (response) {
-                return Impresion.imprimir2(response, "!");
-            }).then(function (response) {
-                sql = `UPDATE Sesion SET Cerrada = 1 WHERE idMesa = ${NumeroMesa} and num = ${NumeroSesion}`;
+            and (Enviada = 2 or Enviada = 4)`;
                 con.query(sql, function (err, result) {
                     if (err) throw err;
                     console.log("Number of records updated: " + result.affectedRows);
-                    res.send({ redireccionar: "/SeleccionMesa" });
+                    Impresion.ticketDetallePagado(req, con).then(function (response) {
+                        return Impresion.imprimir2(response, "!");
+                    }).then(function (response) {
+                        sql = `UPDATE Sesion SET Cerrada = 1 WHERE idMesa = ${NumeroMesa} and num = ${NumeroSesion}`;
+                        con.query(sql, function (err, result) {
+                            if (err) throw err;
+                            console.log("Number of records updated: " + result.affectedRows);
+                            res.send({ redireccionar: "/SeleccionMesa" });
+                        });
+                    });
                 });
             });
-        });
+        }
+        else {
+            res.send({ sinacceso: "Sin acceso para realizar esta operación!" });
+        }
     });
+
+
 });
 
 router.put('/EliminarItem', function (req, res) {
-    var idDetalleOrdenMesa = req.body.idDetalleOrdenMesa;
-    var cantidadEliminada = req.body.cantidadEliminada;
+    //Se validan accesos
+    var idUsuario = req.session.idUsuario;
+    ObtenerAccesos.ValidarAccesos(req, con, idUsuario, 18).then(function (response) {
+        if (response) {
+            var idDetalleOrdenMesa = req.body.idDetalleOrdenMesa;
+            var cantidadEliminada = req.body.cantidadEliminada;
 
-    var sql = `UPDATE DetalleOrdenMesa      
-    SET cantidadEliminada = cantidadEliminada + ${cantidadEliminada}, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE id = ${idDetalleOrdenMesa}`;
-    console.log(sql);
-    con.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("Number of records updated: " + result.affectedRows);
-        res.json(result);
+            var sql = `UPDATE DetalleOrdenMesa      
+            SET cantidadEliminada = cantidadEliminada + ${cantidadEliminada}, Enviada = 4, fechaUpdate = '${new Date().addHours(-6).toISOString().slice(0, 19).replace('T', ' ')}' WHERE id = ${idDetalleOrdenMesa}`;
+            console.log(sql);
+            con.query(sql, function (err, result) {
+                if (err) throw err;
+                console.log("Number of records updated: " + result.affectedRows);
+                res.json(result);
+            });
+        }
+        else {
+            res.send({ sinacceso: "Sin acceso para realizar esta operación!" });
+        }
     });
-
 });
 
 router.put('/PagarItem', function (req, res) {

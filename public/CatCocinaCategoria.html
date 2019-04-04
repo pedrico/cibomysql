@@ -21,8 +21,8 @@
 </head>
 
 <body ng-app="myApp">
-    <div style="background-image: url('/Imagenes/wood2.jpg') ">
-        <div ng-include="'header.html'"></div>
+    <div style="background-image: url('/Imagenes/wood2.jpg')" ng-controller='AppAccesos'>
+        <div ng-include="'header.html'" ></div>
 
         <form class="container" ng-controller="AppCtrl as up" name="up.upload_form">
 
@@ -46,8 +46,7 @@
                         <th scope="col">Nombre</th>
                         <th scope="col">Imagen</th>
                         <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>                        
                     </tr>
                 </thead>
                 <tbody>
@@ -76,10 +75,7 @@
                         </td>
                         <td>
                             <button ng-show="ShowLimpiar" class="btn btn-info" ng-click="clear()">Limpiar</button>
-                        </td>
-                        <td>
-
-                        </td>
+                        </td>                        
                     </tr>
                     <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in filterData = (cocinaList | filter: searchBox) | limitTo:5:5*(page-1)">
                         <td style="font-weight: bolder">{{cocina.nombre}}</td>                                                
@@ -113,6 +109,7 @@
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
     <script src="controllers/CatCocinaCategoriaController.js"></script>
+    <script src="controllers/Accesos.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
 

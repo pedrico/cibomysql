@@ -1,5 +1,9 @@
 var myApp = angular.module('myApp', ['ngFileUpload', 'ui.bootstrap']);
 
+
+
+
+
 myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($scope, $http, Upload, $window) {
 
     $scope.currentPage = 1;
@@ -9,6 +13,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
     $scope.bodynews = [];
     var begin;
     var end;
+    var AccesoCocina = true;
 
     $scope.$watch('currentPage', function () {
         begin = ($scope.currentPage - 1) * $scope.itemsPerPage;
@@ -48,6 +53,8 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
             $scope.paged = {
                 bodynews: $scope.bodynews.slice(begin, end)
             }
+
+            $scope.AccesoCocina = true;
         });
 
         //ComboBox
@@ -113,7 +120,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
             $scope.ShowActualizar = true;
             $scope.ShowLimpiar = true;
             if (response.data.imagen == null) {
-                console.log("imagen null");                
+                console.log("imagen null");
                 $scope.up.file = null;
             }
             else {

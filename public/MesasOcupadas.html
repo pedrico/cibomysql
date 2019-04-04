@@ -19,8 +19,8 @@
 </head>
 
 <body ng-app="myApp">
-    <div style="background-image: url('/Imagenes/wood2.jpg') ">
-        <div ng-include="'header.html'"></div>
+    <div style="background-image: url('/Imagenes/wood2.jpg')" ng-controller='AppAccesos'>
+        <div ng-include="'header.html'" ></div>
 
         <form class="container" ng-controller="AppCtrl as up" name="up.upload_form">
 
@@ -56,7 +56,7 @@
                             <button class="btn btn-success" ng-click="cuenta(cocina.id)">$ Cuenta</button>
                         </td>
                         <td>
-                            <button class="btn btn-danger" ng-click="cerrar(cocina.id)">Cerrar sin pagar</button>
+                            <button ng-if="$parent.accesos.includes(18)" class="btn btn-danger" ng-click="cerrar(cocina.id)">Cerrar sin pagar</button>
                         </td>
                         <td>
                             <button class="btn btn-warning" ng-click="pagar(cocina.id)">Pagar</button>
@@ -81,6 +81,7 @@
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
     <script src="controllers/MesasOcupadasController.js"></script>
+    <script src="controllers/Accesos.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
 

@@ -15,7 +15,7 @@
 
 <body ng-app="IngreBarModule">
     <div style="background-image: url('/Imagenes/wood5.jpeg') ">
-        <div ng-include="'header.html'"></div>
+        <div ng-include="'header.html'" ng-controller='AppAccesos' ></div>
         <form class="container" ng-controller="CtrlIngreBar as up" name="up.upload_form">
 
             <h1>Quitar ingredientes de {{cocina.nombre}}</h1>
@@ -67,6 +67,7 @@
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
     <script src="controllers/SeleccionIngreBarController.js"></script>
+    <script src="controllers/Accesos.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
 

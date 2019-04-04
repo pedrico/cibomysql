@@ -18,8 +18,8 @@
 </head>
 
 <body ng-app="myApp">
-    <div style="background-image: url('/Imagenes/wood2.jpg') ">
-        <div ng-include="'header.html'"></div>
+    <div style="background-image: url('/Imagenes/wood2.jpg')" ng-controller='AppAccesos'>
+        <div ng-include="'header.html'" ng-controller='AppAccesos' ></div>
 
         <form class="container" ng-controller="AppCtrl">
 
@@ -54,6 +54,7 @@
         <div ng-include="'footer.html'"></div>
     </div>
     <script src="controllers/CategoriaCocinaBar.js"></script>
+    <script src="controllers/Accesos.js"></script>
 </body>
 
 </html>

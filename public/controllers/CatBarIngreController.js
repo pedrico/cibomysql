@@ -1,6 +1,6 @@
-var IngredienteModule = angular.module('IngredienteModule', ['ngFileUpload']);
+var myApp = angular.module('IngredienteModule', ['ngFileUpload']);
 
-IngredienteModule.controller('CtrlIngrediente', ['$scope', '$http','Upload','$window', function ($scope, $http,Upload,$window) {
+myApp.controller('CtrlIngrediente', ['$scope', '$http','Upload','$window', function ($scope, $http,Upload,$window) {
     
     var refresh = function () {
         $http.get('CatBarIngre/ingrediente').then(function (response) {

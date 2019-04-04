@@ -16,11 +16,10 @@
 </head>
 
 <body ng-app="ResumenOrdenModule">
-    <div style="background-image: url('/Imagenes/wood2.jpg') ">
+    <div style="background-image: url('/Imagenes/wood2.jpg') " ng-controller='AppAccesos'>
         <div ng-include="'header.html'"></div>
         <form class="container" ng-controller="CtrlResumenOrden as up" name="up.upload_form">
-
-            <h1>Cuenta</h1>
+            <h1>Cuenta </h1>
             <!-- <input ng-model="test"> {{test}} -->
             <div class="row">
                 <div class="col-sm-9">
@@ -30,7 +29,10 @@
                     <!-- <label style="font-size: 25px">Mesa: {{NumeroMesa}} </label> -->
                 </div>
             </div>
-
+            <div class="alert alert-danger alert-dismissible" ng-show="alerta.visible">
+                <!-- <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> -->
+                <strong>{{alerta.mensaje}}</strong>
+            </div>
             <table class="table table-hover table-dark">
                 <thead>
                     <tr>
@@ -100,10 +102,10 @@
                             </div>
                         </td>
                         <td>
-                            <button class="btn btn-danger" ng-click="eliminarItem(cocina)">Eliminar</button>
+                            <button ng-if="$parent.accesos.includes(18)" class="btn btn-danger" ng-click="eliminarItem(cocina)">Eliminar</button>
                         </td>
                         <td>
-                            <button class="btn btn-warning" ng-click="pagarItem(cocina)">Pagar</button>
+                            <button ng-if="$parent.accesos.includes(17)" class="btn btn-warning" ng-click="pagarItem(cocina)">Pagar</button>
                         </td>
                     </tr>
                     <!-- Bar -->
@@ -159,10 +161,10 @@
                             </div>
                         </td>
                         <td>
-                            <button class="btn btn-danger" ng-click="eliminarItem(cocina)">Eliminar</button>
+                            <button ng-if="$parent.accesos.includes(18)" class="btn btn-danger" ng-click="eliminarItem(cocina)">Eliminar</button>
                         </td>
                         <td>
-                            <button class="btn btn-warning" ng-click="pagarItem(cocina)">Pagar</button>
+                            <button ng-if="$parent.accesos.includes(17)" class="btn btn-warning" ng-click="pagarItem(cocina)">Pagar</button>
                         </td>
                     </tr>
                 </tbody>
@@ -187,7 +189,7 @@
             </table>
             <div class="row">
                 <div class="col-sm-4">
-                    <button class="btn btn-danger" ng-click="cerrar()" style="width: 100%">Eliminar monto pendiente
+                    <button ng-if="$parent.accesos.includes(18)" class="btn btn-danger" ng-click="cerrar()" style="width: 100%">Eliminar monto pendiente
                         <br> (El cliente se retira)</button>
                 </div>
                 <div class="col-sm-4">
@@ -197,7 +199,7 @@
                     </button>
                 </div>
                 <div class="col-sm-4">
-                    <button class="btn btn-warning" ng-click="pagarOrden()" style="width: 100%">Pagar monto pendiente
+                    <button ng-if="$parent.accesos.includes(17)" class="btn btn-warning" ng-click="pagarOrden()" style="width: 100%">Pagar monto pendiente
                         <br> (El cliente se retira)</button>
                 </div>
             </div>
@@ -215,10 +217,14 @@
             </div>
 
         </form>
+
         <div ng-include="'footer.html'"></div>
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
     <script src="controllers/CuentaController.js"></script>
+    <script src="controllers/Accesos.js"></script>
+
+
 
 </body>
 

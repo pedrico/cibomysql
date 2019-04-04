@@ -1,4 +1,5 @@
 var express = require('express');
+var ObtenerAccesos = require('./ObtenerAccesos');
 
 var router = express.Router();
 var con;
@@ -24,13 +25,22 @@ router.use(function variablesGlobales(req, res, next) {
 router.get('/', function (req, res) {
     if (req.session.usuario != null) {
         //Para el áre de seleccion de platos, debe validarse que la mesa haya sido seleccionada
-        if (req.session.NumeroMesa != null) {
-            console.log("Ingredientes excluidos bar antes " + req.session.IngredientesExcluidos);
-            var IngredientesExcluidos = [];
-            req.session.IngredientesExcluidos = IngredientesExcluidos;
-            req.session.save(function () {
-                console.log("Ingredientes excluidos bar despues " + req.session.IngredientesExcluidos);
-                res.sendFile(path.resolve('../public/SeleccionBar.html'));
+        if (req.session.NumeroMesa != null && req.session.NumeroMesa != "") {
+            //Se validan accesos
+            var idUsuario = req.session.idUsuario;
+            ObtenerAccesos.ValidarAccesos(req, con, idUsuario, 12).then(function (response) {
+                if (response) {
+                    console.log("Ingredientes excluidos bar antes " + req.session.IngredientesExcluidos);
+                    var IngredientesExcluidos = [];
+                    req.session.IngredientesExcluidos = IngredientesExcluidos;
+                    req.session.save(function () {
+                        console.log("Ingredientes excluidos bar despues " + req.session.IngredientesExcluidos);
+                        res.sendFile(path.resolve('../public/SeleccionBar.html'));
+                    });
+                }
+                else {
+                    res.sendfile(path.resolve('../public/SeleccionMesa.html'));
+                }
             });
         } else {
             res.sendfile(path.resolve('../public/SeleccionMesa.html'));
@@ -106,7 +116,7 @@ router.post('/', function (req, res) {
                     con.query(sql, function (err, result, fields) {
                         if (err) throw err;
                         console.log(JSON.stringify(result));
-                        insertarDetalle(NumeroMesa, NumeroSesion, idPlato, result[0].precio, cantidad, result[0].nombre).then(function (response) {
+                        insertarDetalle(NumeroMesa, 1, idPlato, result[0].precio, cantidad, result[0].nombre).then(function (response) {
                             res.json(response);
                         });
                     });

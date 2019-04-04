@@ -14,8 +14,8 @@
 </head>
 
 <body ng-app="IngreCocinaModule">
-    <div style="background-image: url('/Imagenes/wood2.jpg') ">
-        <div ng-include="'header.html'"></div>
+    <div style="background-image: url('/Imagenes/wood2.jpg')" ng-controller='AppAccesos'>
+        <div ng-include="'header.html'" ></div>
         <form class="container" ng-controller="CtrlIngreCocina as up" name="up.upload_form">
 
             <h1>Ingredientes Plato</h1>
@@ -65,6 +65,7 @@
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
     <script src="controllers/CocinaPlatoIngre.js"></script>
+    <script src="controllers/Accesos.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
 

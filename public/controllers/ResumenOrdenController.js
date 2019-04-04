@@ -1,6 +1,6 @@
-var ResumenOrdenModule = angular.module('ResumenOrdenModule', []);
+var myApp = angular.module('ResumenOrdenModule', []);
 
-ResumenOrdenModule.controller('CtrlResumenOrden', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+myApp.controller('CtrlResumenOrden', ['$scope', '$http', '$window', function ($scope, $http, $window) {
 
     var refresh = function () {
         // $http.get('/cocina').then(function (response) {
@@ -76,10 +76,11 @@ ResumenOrdenModule.controller('CtrlResumenOrden', ['$scope', '$http', '$window',
         });
     };
 
-    $scope.agregar = function () {       
-        $http.post('/ResumenOrden/ResumenOrdenDetalleAgregar', $scope.Mesa).then(function(res){
-            $window.location.href= res.data.redireccionar;
-        });
+    $scope.agregar = function () { 
+        $window.location.href = "/Categoria"      
+        // $http.post('/ResumenOrden/ResumenOrdenDetalleAgregar', $scope.Mesa).then(function(res){
+        //     $window.location.href = res.data.redireccionar;
+        // });
     };
 
     $scope.cancelarOrden = function () {                

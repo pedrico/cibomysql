@@ -1,6 +1,6 @@
-var IngreBarModule = angular.module('IngreBarModule', ['ngFileUpload']);
+var myApp = angular.module('IngreBarModule', ['ngFileUpload']);
 
-IngreBarModule.controller('CtrlIngreBar', ['$scope', '$http', 'Upload', '$window', function ($scope, $http, Upload, $window) {
+myApp.controller('CtrlIngreBar', ['$scope', '$http', 'Upload', '$window', function ($scope, $http, Upload, $window) {
 
     var refresh = function () {
         var idplato = getUrlParameter('plato');

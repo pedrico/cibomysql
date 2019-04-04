@@ -341,3 +341,122 @@ and idItem = 100;
 use restaurante;                    
 select * from CatBarIngre;
 select * from CatCocinaIngre;
+
+-- DROP TABLE CatUsuario;
+-- delete from CatUsuario;
+SELECT * FROM CatUsuario;
+INSERT INTO CatUsuario (id, nombre, apellido, usuario, pass, idRol) values (null, 'Francisco', 'Juarez', 'admin', '123', 3);
+INSERT INTO CatUsuario (id, nombre, apellido, usuario, pass, idRol) values (null, 'Ramiro', 'Leon', 'rleonel', '123', 2);
+INSERT INTO CatUsuario (id, nombre, apellido, usuario, pass, idRol) values (null, 'Jairo', 'Fuentes', 'jfuentes', '123', 3);
+
+
+INSERT INTO Rol (nombre, descripcion) values ('Administrador', 'Acceso a todo el sistema.');
+INSERT INTO Rol (nombre, descripcion) values ('Cajero', 'Acceso a orden, mesas y cuenta. Restricción de catálogos y eliminación de items de cuentas.');
+INSERT INTO Rol (nombre, descripcion) values ('Mesero', 'Acceso a orden y visualización de cuenta. Restricción de catálogos, y eliminación de items de cuentas.');
+
+select * from RolAcceso;
+select * from Acceso;
+
+INSERT INTO Acceso (nombre, descripcion) values ('');
+
+delete from Acceso;
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (1, 0, 'Cocina', 'Menú catálogo de cocina.');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (2, 1, 'Cocina Platos', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (3, 1, 'Cocina Categorías', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (4, 1, 'Cocina Ingredientes', '');
+
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (5, 0, 'Bar', 'Menú catálogo de bar.');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (6, 5, 'Bar Bebidas', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (7, 5, 'Bar Categorías', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (8, 5, 'Bar Ingredientes', '');
+
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (9, 0, 'Seleccion Mesa', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (10, 9, 'Seleccion Cocina', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (11, 10, 'Seleccion Ingre Cocina', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (12, 9, 'Seleccion Bar', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (13, 12, 'Seleccion Ingre Bar', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (14, 9, 'Resumen Orden', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (15, 14, 'Resumen Orden Eliminar', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (16, 9, 'Cuenta', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (17, 16, 'Cuenta Pagar', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (18, 16, 'Cuenta Eliminar', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (19, 16, 'Cuenta Ticket', '');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (20, 0, 'Reporte Ventas', '');
+
+
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (21, 0, 'Usuario', 'Menú catálogo de usuarios.');
+INSERT INTO Acceso (id, idPadre, nombre, descripcion) values (22, 0, 'Mesas Ocupadas', '');
+
+
+
+
+-- Admin
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,1);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,2);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,3);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,4);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,5);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,6);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,7);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,8);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,9);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,10);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,11);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,12);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,13);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,14);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,15);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,16);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,17);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,18);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,19);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,20);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,21);
+INSERT INTO RolAcceso (idRol, idAcceso) values(1,22);
+
+-- Cajero
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,9);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,10);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,11);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,12);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,13);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,14);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,15);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,16);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,17);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,18);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,19);
+INSERT INTO RolAcceso (idRol, idAcceso) values(2,22);
+
+
+-- Mesero
+INSERT INTO RolAcceso (idRol, idAcceso) values(3,9);
+INSERT INTO RolAcceso (idRol, idAcceso) values(3,10);
+INSERT INTO RolAcceso (idRol, idAcceso) values(3,11);
+INSERT INTO RolAcceso (idRol, idAcceso) values(3,12);
+INSERT INTO RolAcceso (idRol, idAcceso) values(3,13);
+INSERT INTO RolAcceso (idRol, idAcceso) values(3,14);
+INSERT INTO RolAcceso (idRol, idAcceso) values(3,15);
+INSERT INTO RolAcceso (idRol, idAcceso) values(3,16);
+
+
+select * from CatUsuario;
+
+select a.id from CatUsuario cu 
+join Rol r on cu.idRol = r.id
+join RolAcceso ra on r.id = ra.idRol
+join Acceso a on ra.idAcceso = a.id
+where cu.id = 1;
+
+
+update CatUsuario set idRol = 1 where id = 1;
+
+-- delete from RolAcceso;
+select * from Acceso;
+select * from RolAcceso;
+Select * from Rol;
+
+select * from Mesa;
+select * from Sesion;
+select * from DetalleOrdenMesa;
+select * from CatUsuario;

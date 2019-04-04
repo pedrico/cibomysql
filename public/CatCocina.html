@@ -21,8 +21,8 @@
 </head>
 
 <body ng-app="myApp">
-    <div style="background-image: url('/Imagenes/wood2.jpg') ">
-        <div ng-include="'header.html'"></div>
+    <div style="background-image: url('/Imagenes/wood2.jpg')" ng-controller='AppAccesos'>
+        <div ng-include="'header.html'" ng-controller="AppAccesos"></div>
 
         <form class="container" ng-controller="AppCtrl as up" name="up.upload_form">
 
@@ -130,6 +130,7 @@
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
     <script src="controllers/CatCocinaController.js"></script>
+    <script src="controllers/Accesos.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
 

@@ -1,6 +1,6 @@
-var IngreCocinaModule = angular.module('IngreCocinaModule', ['ngFileUpload']);
+var myApp = angular.module('IngreCocinaModule', ['ngFileUpload']);
 
-IngreCocinaModule.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$window', function ($scope, $http, Upload, $window) {
+myApp.controller('CtrlIngreCocina', ['$scope', '$http', 'Upload', '$window', function ($scope, $http, Upload, $window) {
 
     var refresh = function () {
         var idplato = getUrlParameter('plato');

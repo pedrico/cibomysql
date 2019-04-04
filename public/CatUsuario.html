@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="/css/bootstrap-Sandstone.css">
-    <link rel="stylesheet" href="/css/bootstrap3.3.6.css">
+    <!-- <link rel="stylesheet" href="/css/bootstrap3.3.6.css"> -->
     <script src="/js/jquery-3.3.1.min.js"></script>
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.js"></script>
@@ -16,8 +17,8 @@
 </head>
 
 <body ng-app="myApp">
-    <div style="background-image: url('/Imagenes/wood2.jpg') ">
-        <div ng-include="'header.html'"></div>
+    <div style="background-image: url('/Imagenes/wood2.jpg')" ng-controller='AppAccesos'>
+        <div ng-include="'header.html'" ></div>
 
         <form class="container" ng-controller="AppCtrl as up" name="up.upload_form">
 
@@ -41,8 +42,9 @@
                         <th scope="col">Apellido</th>
                         <th scope="col">Usuario</th>
                         <th scope="col">Contraseña</th>
+                        <th scope="col">Rol</th>
                         <th>&nbsp;</th>
-                        <th>&nbsp;</th>                        
+                        <th>&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,18 +62,23 @@
                             <input type="password" required class="form-control" ng-model="cocina.pass">
                         </td>
                         <td>
+                            <select required ng-model="cocina.idRol" ng-options="x.id as x.nombre for x in roles">
+                            </select>
+                        </td>
+                        <td>
                             <button ng-show="ShowAgregar" class="btn btn-primary" ng-disabled="up.upload_form.$invalid" ng-click="addContact()">Agregar Usuario</button>
                             <button ng-show="ShowActualizar" class="btn btn-info" ng-click="update()">Actualizar</button>
                         </td>
                         <td>
                             <button ng-show="ShowLimpiar" class="btn btn-info" ng-click="clear()">Limpiar</button>
-                        </td>                       
+                        </td>
                     </tr>
                     <tr class="table-primary" style="color: rgb(67, 67, 77)" ng-repeat="cocina in filterData = (cocinaList | filter: searchBox) | limitTo:5:5*(page-1)">
                         <td style="font-weight: bolder">{{cocina.nombre}}</td>
                         <td>{{cocina.apellido}}</td>
                         <td>{{cocina.usuario}}</td>
-                        <td>{{cocina.pass}}</td>                        
+                        <td>{{cocina.pass}}</td>
+                        <td>{{cocina.rol}}</td>
                         <td>
                             <button class="btn btn-danger" ng-click="remove(cocina.id)">Eliminar</button>
                         </td>
@@ -91,6 +98,7 @@
     </div>
 
     <script src="controllers/CatUsuario.js"></script>
+    <script src="controllers/Accesos.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
     <script type="text/javascript" src="../node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script>
 

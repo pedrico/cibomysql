@@ -29,8 +29,8 @@ PRIMARY KEY (id)
 );
 
 create table CocinaPlatoIngre(
-idPlato int NOT NULL NOT NULL,
-idIngre int NOT NULL NOT NULL
+idPlato int NOT NULL,
+idIngre int NOT NULL
 );
 -- Cocina Fin
 
@@ -62,8 +62,8 @@ PRIMARY KEY (id)
 );
 
 create table BarBebidaIngre(
-idBebida int NOT NULL NOT NULL,
-idIngre int NOT NULL NOT NULL
+idBebida int NOT NULL,
+idIngre int NOT NULL
 );
 -- Bar Fin
 
@@ -106,8 +106,28 @@ nombre CHAR(50),
 apellido CHAR(50),
 usuario CHAR(50) NOT NULL,
 pass CHAR(50) NOT NULL,
+idRol int NOT NULL,
 PRIMARY KEY (id)
 );
+
+create table Rol(
+id int NOT NULL AUTO_INCREMENT,
+nombre CHAR(150) NOT NULL,
+descripcion CHAR(250),
+PRIMARY KEY (id)
+);
+
+create table RolAcceso(
+idRol int NOT NULL,
+idAcceso int NOT NULL
+);
+
+create table Acceso(
+id int NOT NULL AUTO_INCREMENT,
+nombre CHAR(150) NOT NULL,
+descripcion CHAR(250),
+PRIMARY KEY (id)
+); 
 
 
 

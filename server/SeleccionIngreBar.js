@@ -1,4 +1,5 @@
 var express = require('express');
+var ObtenerAccesos = require('./ObtenerAccesos');
 
 var router = express.Router();
 var con;
@@ -24,8 +25,17 @@ router.use(function variablesGlobales(req, res, next) {
 router.get('/', function (req, res) {
     if (req.session.usuario != null) {
         //Para el áre de seleccion de platos, debe validarse que la mesa haya sido seleccionada
-        if (req.session.NumeroMesa != null) {
-            res.sendFile(path.resolve('../public/SeleccionIngreBar.html'));
+        if (req.session.NumeroMesa != null && req.session.NumeroMesa != "") {
+            //Se validan accesos
+            var idUsuario = req.session.idUsuario;
+            ObtenerAccesos.ValidarAccesos(req, con, idUsuario, 13).then(function (response) {
+                if (response) {
+                    res.sendFile(path.resolve('../public/SeleccionIngreBar.html'));
+                }
+                else {
+                    res.sendfile(path.resolve('../public/SeleccionMesa.html'));
+                }
+            });
         } else {
             res.sendfile(path.resolve('../public/SeleccionMesa.html'));
         }

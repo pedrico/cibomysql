@@ -9,6 +9,7 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
     $scope.bodynews = [];
     var begin;
     var end;
+    var AccesoCocina;
 
     $scope.$watch('currentPage', function () {
         begin = ($scope.currentPage - 1) * $scope.itemsPerPage;
@@ -47,6 +48,8 @@ myApp.controller('AppCtrl', ['$scope', '$http', 'Upload', '$window', function ($
             $scope.paged = {
                 bodynews: $scope.bodynews.slice(begin, end)
             }
+
+            AccesoCocina = false;
         });
 
          //ComboBox

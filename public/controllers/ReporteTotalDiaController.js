@@ -1,7 +1,7 @@
 //import { saveAs } from 'file-saver/FileSaver';
-var ReporteTotalDiaModule = angular.module('ReporteTotalDiaModule', []);
+var myApp = angular.module('ReporteTotalDiaModule', []);
 
-ReporteTotalDiaModule.controller('CtrlReporteTotalDia', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+myApp.controller('CtrlReporteTotalDia', ['$scope', '$http', '$window', function ($scope, $http, $window) {
 
     var refresh = function () {
 

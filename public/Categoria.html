@@ -15,7 +15,7 @@
 </head>
 
 <body ng-app="CategoriaModule">
-    <div style="background-image: url('/Imagenes/wood3.jpg') ">
+    <div style="background-image: url('/Imagenes/wood3.jpg')" ng-controller='AppAccesos'>
         <div ng-include="'header.html'"></div>
         <form class="container">
             <h1>Categoría</h1>
@@ -40,7 +40,7 @@
                         <button class="btn btn-success" style="background-color: olivedrab; width: 96%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
                             ng-click="Cocina()">
                             Cocina</button>
-                    </div>  
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-12" style="white-space: nowrap;">
@@ -79,7 +79,7 @@
                         <label></label>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" ng-if="$parent.accesos.includes(16)">
                     <div class="col-sm-12">
                         <button class="btn" ng-click="cuentaOrden()" style="background-color: rgb(246, 255, 75); width: 96%; height:50px; font-size: 50px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif">$ Cuenta</button>
                     </div>
@@ -103,6 +103,7 @@
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
     <script src="controllers/CategoriaController.js"></script>
+    <script src="controllers/Accesos.js"></script>
 </body>
 
 </html>

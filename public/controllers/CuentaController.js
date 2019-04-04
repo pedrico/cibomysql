@@ -1,12 +1,14 @@
-var ResumenOrdenModule = angular.module('ResumenOrdenModule', []);
+var myApp = angular.module('ResumenOrdenModule', []);
 
-ResumenOrdenModule.controller('CtrlResumenOrden', ['$scope', '$http', '$window', '$interval', function ($scope, $http, $window, $interval) {
+myApp.controller('CtrlResumenOrden', ['$scope', '$http', '$window', '$interval', function ($scope, $http, $window, $interval) {
 
     var refresh = function () {
         // $http.get('/cocina').then(function (response) {
         //     ////console.log("Recibí la info que requerí.");
         //     $scope.cocinaList = response.data;
         // });
+        console.log("Accesos desde cuenta");
+        console.log($scope.accesos);
 
 
         $http.get('/Categoria/CategoriaSesionMesa').then(function (response) {
@@ -69,6 +71,11 @@ ResumenOrdenModule.controller('CtrlResumenOrden', ['$scope', '$http', '$window',
         });
     };
     refresh();
+
+    var OcultarAlerta = function () {
+        $scope.alerta = { mensaje: '', visible: false };
+    };
+    OcultarAlerta();
 
     function AsignaSubtotal(cocinaListTemp) {
         return new Promise(
@@ -153,7 +160,11 @@ ResumenOrdenModule.controller('CtrlResumenOrden', ['$scope', '$http', '$window',
 
     $scope.cerrar = function () {
         $http.put('/Cuenta/Cerrar').then(function (res) {
-            $window.location.href = res.data.redireccionar;
+            if (res.data.sinacceso != null) {
+                $scope.alerta = { mensaje: res.data.sinacceso, visible: true };
+            } else {
+                $window.location.href = res.data.redireccionar;
+            }
         });
     };
 
@@ -172,7 +183,11 @@ ResumenOrdenModule.controller('CtrlResumenOrden', ['$scope', '$http', '$window',
     $scope.eliminarItem = function (cocina) {
         $scope.Item = { idDetalleOrdenMesa: cocina.idDetalleOrdenMesa, cantidadEliminada: cocina.cantidadAPagar };
         $http.put('/Cuenta/EliminarItem', $scope.Item).then(function (res) {
-            refresh();
+            if (res.data.sinacceso != null) {
+                $scope.alerta = { mensaje: res.data.sinacceso, visible: true };
+            } else {
+                refresh();
+            }
         });
     };
 
@@ -184,8 +199,8 @@ ResumenOrdenModule.controller('CtrlResumenOrden', ['$scope', '$http', '$window',
         });
     };
 
-    $scope.ticket = function () {                
-        $http.post('/Cuenta/ticket').then(function (res) {            
+    $scope.ticket = function () {
+        $http.post('/Cuenta/ticket').then(function (res) {
         });
     };
 

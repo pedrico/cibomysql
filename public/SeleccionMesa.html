@@ -16,15 +16,21 @@
 </head>
 
 <body ng-app="SeleccionMesaModule">
-    <div style="background-image: url('/Imagenes/wood3.jpg') ">
+    <div style="background-image: url('/Imagenes/wood3.jpg') " ng-controller='AppAccesos'>
         <div ng-include="'header.html'"></div>
         <form class="container">
             <div class="container" ng-controller="CtrlSeleccionMesa">
+
+                <div class="alert alert-danger alert-dismissible" ng-show="alerta.visible">
+                    <!-- <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> -->
+                    <strong>{{alerta.mensaje}}</strong> agregado(a).
+                </div>
+
                 <div class="row">
                     <div class="col-sm-9">
                     </div>
                     <div class="col-sm-3">
-                        <span class="badge badge-pill badge-warning" style="font-size: 15px">Usuario: {{usuario}}</span>                        
+                        <span class="badge badge-pill badge-warning" style="font-size: 15px">Usuario: {{usuario}}</span>
                     </div>
                 </div>
                 <div class="row">
@@ -103,6 +109,7 @@
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
     <script src="controllers/SeleccionMesaController.js"></script>
+    <script src="controllers/Accesos.js"></script>
 </body>
 
 </html>

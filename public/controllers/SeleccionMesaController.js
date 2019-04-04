@@ -1,17 +1,17 @@
-var SeleccionMesaModule = angular.module('SeleccionMesaModule', []);
+var myApp = angular.module('SeleccionMesaModule', []);
 
-SeleccionMesaModule.controller('CtrlSeleccionMesa', ['$scope', '$http','$window', function ($scope, $http,$window) {
-    
-    var refresh = function () {        
-        $scope.Mesa = {NumeroMesa: ""};
+myApp.controller('CtrlSeleccionMesa', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+
+    var refresh = function () {
+        $scope.Mesa = { NumeroMesa: "" };
         var variableMesa = $scope.Mesa;
         console.log(variableMesa);
         console.log(variableMesa.NumeroMesa);
         console.log($scope.Mesa);
         console.log($scope.Mesa.NumeroMesa);
 
-        $http.get('Login/UsrLogin').then(function (response) { 
-            console.log("Obtener usuario");           
+        $http.get('Login/UsrLogin').then(function (response) {
+            console.log("Obtener usuario");
             $scope.usuario = response.data.usuario;
             console.log($scope.usuario);
         });
@@ -58,20 +58,25 @@ SeleccionMesaModule.controller('CtrlSeleccionMesa', ['$scope', '$http','$window'
     $scope.Eliminar = function () {
         var strNumeroMesa = $scope.Mesa.NumeroMesa;
 
-        $scope.Mesa.NumeroMesa = strNumeroMesa.substring(0,strNumeroMesa.length-1);
+        $scope.Mesa.NumeroMesa = strNumeroMesa.substring(0, strNumeroMesa.length - 1);
     };
 
-    $scope.Continuar = function () {       
-        $http.post('/SeleccionMesa', $scope.Mesa).then(function(res){
-            $window.location.href= res.data.redireccionar;
-        });
+    $scope.Continuar = function () {        
+        if (String($scope.Mesa.NumeroMesa).length > 0) {
+            $http.post('/SeleccionMesa', $scope.Mesa).then(function (res) {
+                $window.location.href = res.data.redireccionar;
+            });
+        } else {
+            $scope.alerta = { mensaje: "Seleccione una mesa.", visible: true };
+        }
+
     };
 
-    $scope.remove = function(id){
+    $scope.remove = function (id) {
         console.log(id);
-        $http.delete('/cocina/'+ id).then(function(response){
+        $http.delete('/cocina/' + id).then(function (response) {
             refresh();
-        }) ;
+        });
 
     };
 

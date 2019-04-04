@@ -1,6 +1,6 @@
-var CategoriaModule = angular.module('CategoriaModule', []);
+var myApp = angular.module('CategoriaModule', []);
 
-CategoriaModule.controller('CtrlCategoria', ['$scope', '$http','$window', function ($scope, $http,$window) {
+myApp.controller('CtrlCategoria', ['$scope', '$http','$window', function ($scope, $http,$window) {
     
     var refresh = function () {
         console.log("categoria mesa");

@@ -52,6 +52,7 @@ var MesasOcupadas = require('./MesasOcupadas');
 var CategoriaCocinaBar = require('./CategoriaCocinaBar');
 var CatUsuario = require('./CatUsuario');
 var Login = require('./Login');
+var Accesos = require('./Accesos');
 //var Impresion = require('./Impresion');
 
 app.use('/CatCocinaCategoria', CatCocinaCategoria);
@@ -75,6 +76,7 @@ app.use('/MesasOcupadas', MesasOcupadas);
 app.use('/CategoriaCocinaBar', CategoriaCocinaBar);
 app.use('/CatUsuario', CatUsuario);
 app.use('/Login', Login);   
+app.use('/Accesos', Accesos);   
 //app.use('/Impresion', Impresion);
 
 

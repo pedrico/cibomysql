@@ -13,41 +13,41 @@
                 </a>
             </li> -->
 
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" ng-if="accesos.includes(1)">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Cocina</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="http://localhost:4201/catcocina">Catálogo Platos</a>
-                    <a class="dropdown-item" href="http://localhost:4201/CatCocinaCategoria">Catálogo Categorías</a>
-                    <a class="dropdown-item" href="http://localhost:4201/CatCocinaIngre">Catálogo Ingredientes</a>                    
+                    <a class="dropdown-item" ng-if="accesos.includes(2)" href="http://localhost:4201/catcocina">Catálogo Platos</a>
+                    <a class="dropdown-item" ng-if="accesos.includes(3)" href="http://localhost:4201/CatCocinaCategoria">Catálogo Categorías</a>
+                    <a class="dropdown-item" ng-if="accesos.includes(4)" href="http://localhost:4201/CatCocinaIngre">Catálogo Ingredientes</a>
                     <!-- <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Separated link</a> -->
                 </div>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" ng-if="accesos.includes(5)">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Bar</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="http://localhost:4201/catbar">Catálogo Bebidas</a>
-                    <a class="dropdown-item" href="http://localhost:4201/CatBarCategoria">Catálogo Categorías</a>
-                    <a class="dropdown-item" href="http://localhost:4201/CatBarIngre">Catálogo Ingredientes</a>                                        
+                    <a class="dropdown-item" ng-if="accesos.includes(6)" href="http://localhost:4201/catbar">Catálogo Bebidas</a>
+                    <a class="dropdown-item" ng-if="accesos.includes(7)" href="http://localhost:4201/CatBarCategoria">Catálogo Categorías</a>
+                    <a class="dropdown-item" ng-if="accesos.includes(8)" href="http://localhost:4201/CatBarIngre">Catálogo Ingredientes</a>
                 </div>
             </li>
 
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Mesas</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="http://localhost:4201/seleccionmesa">Seleccionar Mesa</a>
-                    <a class="dropdown-item" href="http://localhost:4201/MesasOcupadas">Mesas Ocupadas</a>                                        
+                    <a class="dropdown-item" ng-if="accesos.includes(9)" href="http://localhost:4201/seleccionmesa">Seleccionar Mesa</a>
+                    <a class="dropdown-item" ng-if="accesos.includes(22)" href="http://localhost:4201/MesasOcupadas">Mesas Ocupadas</a>
                 </div>
             </li>
-        
+
             <li class="nav-item">
-                <a class="nav-link" href="http://localhost:4201/resumenorden">Orden</a>
+                <a class="nav-link" ng-if="accesos.includes(14)" href="http://localhost:4201/resumenorden">Orden</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="http://localhost:4201/ReporteTotalDia">Reporte de Ventas</a>
+                <a class="nav-link" ng-if="accesos.includes(20)" href="http://localhost:4201/ReporteTotalDia">Reporte de Ventas</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="http://localhost:4201/CatUsuario">Usuarios</a>
+                <a class="nav-link" ng-if="accesos.includes(21)" href="http://localhost:4201/CatUsuario">Usuarios</a>
             </li>
         </ul>
 

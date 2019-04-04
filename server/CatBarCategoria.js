@@ -1,4 +1,5 @@
 var express = require('express');
+var ObtenerAccesos = require('./ObtenerAccesos');
 
 var router = express.Router();
 var con;
@@ -16,10 +17,19 @@ router.use(function variablesGlobales(req, res, next) {
 
 router.get('/', function (req, res) {
     if (req.session.usuario != null) {
-    res.sendFile(path.resolve('../public/CatBarCategoria.html'));
+        //Se validan accesos
+        var idUsuario = req.session.idUsuario;
+        ObtenerAccesos.ValidarAccesos(req, con, idUsuario, 7).then(function (response) {
+            if (response) {
+                res.sendFile(path.resolve('../public/CatBarCategoria.html'));
+            }
+            else {
+                res.sendfile(path.resolve('../public/SeleccionMesa.html'));
+            }
+        });
     } else {
         res.sendfile(path.resolve('../public/Login.html'));
-    }    
+    }
 });
 
 router.get('/cocina', function (req, res) {

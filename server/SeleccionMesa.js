@@ -24,7 +24,7 @@ router.get('/', function (req, res) {
     res.sendFile(path.resolve('../public/SeleccionMesa.html'));
   } else {
     console.log('Else');
-    res.sendfile(path.resolve('../public/Login.html'));
+    res.sendFile(path.resolve('../public/Login.html'));
   }
 });
 
